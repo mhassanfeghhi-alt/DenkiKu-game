@@ -1,0 +1,466 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DenkiKu | دنکی‌کو</title>
+<script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
+<style>
+@font-face{font-family:Vazirmatn;src:url(fonts/Vazirmatn.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{--bg:#fffaf4;--ink:#2b1a0a;--card:#fff;--o:#ff7a00;--o2:#ffe6cc;--line:#f0d9c0;--mut:#8a6a4a;--ok:#1f9d55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme]){--bg:#0e1a13;--ink:#e6f4ea;--card:#16271d;--o:#34d17a;--o2:#1f3a2a;--line:#2c4a39;--mut:#8fb9a0}}
+:root[data-theme=green]{--bg:#0e1a13;--ink:#e6f4ea;--card:#16271d;--o:#34d17a;--o2:#1f3a2a;--line:#2c4a39;--mut:#8fb9a0}
+:root[data-theme=night]{--bg:#1d130a;--ink:#fff1e0;--card:#2a1c10;--o:#ff8a1f;--o2:#4a2c10;--line:#5a3d22;--mut:#d9b48a}
+:root[data-theme=orange]{--bg:#fffaf4;--ink:#2b1a0a;--card:#fff;--o:#ff7a00;--o2:#ffe6cc;--line:#f0d9c0;--mut:#8a6a4a}
+
+:root[data-theme=mint]{--bg:#f3fbf5;--ink:#10301d;--card:#fff;--o:#1f9d55;--o2:#d8f3e2;--line:#bfe3cd;--mut:#4f7a62}
+:root[data-theme=lilac]{--bg:#faf6ff;--ink:#2a1745;--card:#fff;--o:#8a3ffc;--o2:#eadcff;--line:#d9c6f5;--mut:#7a5ea6}
+:root[data-theme=violet]{--bg:#150f24;--ink:#efe6ff;--card:#211838;--o:#b27cff;--o2:#34265a;--line:#46357a;--mut:#b9a3e6}
+:root[data-theme=ocean]{--bg:#0b1722;--ink:#e4f2ff;--card:#12263a;--o:#3fb4ff;--o2:#1b3a57;--line:#2a4d6e;--mut:#8fb6d6}
+*{box-sizing:border-box}html,body{margin:0;height:auto}
+body{background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.9;padding:10px;display:flex;flex-direction:column;align-items:center}
+#top{display:flex;justify-content:space-between;align-items:center;width:min(96vw,520px)}
+.logo{font-weight:900;font-size:22px;color:var(--o);letter-spacing:.5px;direction:ltr}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:6px 14px;background:var(--o2);color:var(--ink)}
+button{transition:.15s}button:hover:not(:disabled){background:var(--o2);background:color-mix(in srgb,var(--o) 32%,var(--card));box-shadow:inset 0 0 0 2px var(--o)}button:active:not(:disabled){transform:scale(.96)}button.p{background:var(--o);color:var(--on);font-weight:700}button.p:hover:not(:disabled){background:var(--o);filter:brightness(1.12);box-shadow:0 3px 10px color-mix(in srgb,var(--o) 50%,transparent)}button:disabled{opacity:.4;cursor:not-allowed}.cell.sel{box-shadow:inset 0 0 0 2px var(--o)}.cell.hl{background:var(--o2);background:color-mix(in srgb,var(--o) 28%,var(--card))}.lbl.f{color:var(--ink)}
+#app{width:min(96vw,520px);display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px}
+.card h2,.card h3{margin:0 0 4px;color:var(--o)}
+.r2{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.r2>*{flex:1}
+.fm{direction:ltr;text-align:center;background:var(--o2);border-radius:10px;padding:4px 8px;margin:6px 0;font-weight:700}
+.mut{color:var(--mut);font-size:13px}.st{color:var(--o);letter-spacing:2px}
+.board{display:grid;grid-template-columns:repeat(9,1fr);width:min(96vw,460px);aspect-ratio:1;direction:ltr;border:3px solid var(--ink);background:var(--card);border-radius:6px;overflow:hidden;align-self:center}
+.cell{position:relative;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,5vw,26px);border:1px solid var(--line);cursor:pointer;user-select:none}
+.cell.g{font-weight:900}.cell.b{color:var(--o);font-weight:900}.cell.sel{background:var(--o2)}
+.cage{position:absolute;inset:3px;pointer-events:none;border:0 dashed var(--o)}
+.lbl{position:absolute;top:0;left:1px;font-size:clamp(9px,2.6vw,12px);color:var(--o);font-weight:700;background:var(--card);padding:0 2px;line-height:1.3;border-radius:3px;z-index:2}
+.lbl.z{animation:pl 1.4s ease-in-out infinite}@keyframes pl{50%{transform:scale(1.3)}}
+.pad{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;direction:ltr}.pad button{padding:8px 0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:10px;z-index:9}.ov.on{display:flex}
+.ov .card{width:min(96vw,420px);max-height:94vh;overflow:auto;border:2px solid var(--o)}
+.ckt{direction:ltr;width:100%;background:var(--bg);border-radius:12px}
+.w{stroke:var(--ink);stroke-width:2.6;fill:none}.rz{fill:var(--card);stroke:var(--ink);stroke-width:2.2;cursor:pointer}.rz:hover,.rz.on{fill:var(--o2);stroke:var(--o)}
+.t{fill:var(--ink);font-size:12.5px;font-family:Vazirmatn,Tahoma,sans-serif}.ar{fill:var(--o)}.dot{fill:var(--o)}
+input{font:inherit;width:100%;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);direction:ltr;text-align:center}
+.box{background:var(--o2);border-radius:10px;padding:6px 10px;font-size:14px;margin-top:6px}
+
+:root{--on:#fff}:root[data-theme=green],:root[data-theme=night],:root[data-theme=violet],:root[data-theme=ocean]{--on:#0d0d0d}
+@media(prefers-color-scheme:dark){:root:not([data-theme]){--on:#0d0d0d}}
+.board{grid-template-columns:repeat(9,minmax(0,1fr));grid-template-rows:repeat(9,minmax(0,1fr))}.cell{min-width:0;min-height:0}
+.cell.err{background:rgba(229,72,77,.3)!important;color:#e5484d}
+.pad{grid-template-columns:repeat(11,1fr)}.pad button{padding:8px 0;display:flex;justify-content:center;align-items:center}.pad .on{background:var(--o);color:var(--on)}
+.hud{display:flex;flex-direction:column;gap:4px;padding:6px 10px}.hr{display:flex;align-items:center;gap:8px;position:relative}.hc{flex:1;display:flex;flex-wrap:wrap;align-items:center;font-size:18px}
+.sbtn{padding:0 8px;font-size:24px;color:var(--o);background:transparent}.sbtn.lost{color:var(--mut)}
+.tk{display:inline-flex;width:24px;height:24px;border-radius:7px;align-items:center;justify-content:center;background:var(--o2);margin:2px;font-size:13px;font-weight:700}
+.tk.ok{background:var(--ok);color:#fff}.tk.bad{background:#e5484d;color:#fff}.tk.hint{background:#f5c542;color:#3a2a00}
+.jmp{animation:jmp .7s}@keyframes jmp{40%{transform:translateY(-12px) scale(1.55);font-weight:900}70%{transform:scale(1.1)}}
+.boom{display:inline-block;animation:boom .8s}@keyframes boom{35%{transform:scale(2) rotate(-12deg);filter:brightness(1.7)}70%{transform:scale(.3) rotate(14deg);opacity:.4}}
+.tmr{font-weight:700}.tmr.red{color:#e5484d;animation:pl 1s infinite}
+.pop{position:absolute;top:100%;inset-inline-start:0;z-index:5;background:var(--card);border:1.5px solid var(--o);border-radius:10px;padding:6px 10px;font-size:12.5px;max-width:290px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.dots{display:flex;gap:8px;justify-content:center}.dots i{width:10px;height:10px;border-radius:50%;background:var(--line);cursor:pointer;transition:.2s}.dots i.on{background:var(--o);transform:scale(1.35)}
+details{background:var(--o2);border-radius:10px;padding:4px 10px}.fig{margin-bottom:6px}
+.nt{position:absolute;inset:2px;display:grid;grid-template-columns:repeat(3,1fr);font-size:clamp(7px,2vw,10px);color:var(--mut);line-height:1;pointer-events:none;direction:ltr}.nt i{font-style:normal;display:flex;align-items:center;justify-content:center}
+.pad{grid-template-columns:repeat(9,1fr)}.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.tools button{padding:8px 0;display:flex;justify-content:center;align-items:center}.tools .on{background:var(--o);color:var(--on)}
+input[type=range]{accent-color:var(--o);padding:0;border:0;direction:ltr}label{display:block;margin-top:6px}
+.edw{position:relative;aspect-ratio:340/240;background:var(--bg);border-radius:12px;border:1px solid var(--line);margin-top:6px}.edw canvas,.edw svg{position:absolute;inset:0;width:100%;height:100%}.gd{fill:var(--line)}.bt{stroke:var(--ink);stroke-width:3}.tl{padding:5px 10px}
+.tbar{position:relative;flex:1;height:24px;border-radius:12px;background:var(--o2);overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}.tbar i{position:absolute;inset-block:0;inset-inline-start:0;background:var(--o);opacity:.85;transition:width 1s linear}.tbar.red i{background:#e5484d}.tbar b{position:relative;font-size:13px;font-weight:700;color:var(--ink);text-shadow:0 0 4px var(--card),0 0 2px var(--card)}.tbar.red b{animation:pl 1s infinite}
+.tt{paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round;font-weight:700}
+</style></head><body>
+<div id="top"><button onclick="home()">🏠</button><svg id="lg" width="200" height="58" viewBox="0 0 200 58"><text id="lt" x="12" y="42" font-size="30" font-weight="800" font-family="Vazirmatn,Arial,sans-serif" fill="var(--o)" style="direction:ltr">Denkı<tspan fill="var(--ink)">Ku</tspan></text><path id="tr" fill="none" stroke="var(--o)" stroke-width="3" stroke-linecap="round" opacity=".55"/><circle id="el" r="4.2" fill="var(--o)"/></svg><span><button id="sb" onclick="mute()">🔊</button> <button id="tb" onclick="theme()">🎨</button></span></div>
+<div id="app"></div>
+<div class="ov" id="ov"><div class="card" id="mc"></div></div>
+<script>
+const $=s=>document.querySelector(s),rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[rnd(0,a.length-1)];
+const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const divs=n=>{const d=[];for(let i=1;i<=n;i++)if(n%i==0)d.push(i);return d};
+let P={};try{P=JSON.parse(localStorage.getItem('dk')||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem('dk',JSON.stringify(P))}catch(e){}};
+const THM=['orange','mint','lilac','green','night','violet','ocean'],NM=['نارنجی روشن','سبز روشن','بنفش روشن','سبز تیره','نارنجی تیره','بنفش تیره','آبی تیره'];let ti=0;
+try{const t=localStorage.getItem('dkt');if(t){document.documentElement.dataset.theme=t;ti=THM.indexOf(t)}}catch(e){}
+function theme(){ti=(ti+1)%7;document.documentElement.dataset.theme=THM[ti];toast('تم: '+NM[ti]);try{localStorage.setItem('dkt',THM[ti])}catch(e){}}
+const T=[{n:'حلقهٔ ساده و قانون اهم',i:'🔋'},{n:'قاعدهٔ انشعاب',i:'🔀'},{n:'ساده‌سازی مدار (متوالی و موازی)',i:'🧩'},{n:'برابری ولتاژ شاخه‌ها',i:'⚖️'},{n:'مدار چندحلقه‌ای',i:'🕸️'},{n:'مقاومت درونی باتری',i:'🔌'},{n:'آمپرسنج و ولت‌سنج',i:'🧭'},{n:'حالت ترکیبی',i:'🌟'}];
+const LV=['آسان','متوسط','سخت','بسیار سخت'];
+const TIP=['در حلقهٔ ساده جریان همه‌جا یکسان است و جمع افت ولتاژها برابر ولتاژ باتری است.','در هر گره مجموع جریان‌های ورودی با مجموع جریان‌های خروجی برابر است.','مقاومت‌های متوالی را جمع کن و مقاومت‌های موازی را با فرمول موازی ساده کن؛ از دورترین بخش شروع کن.','دو سر همهٔ شاخه‌های موازی به دو گرهٔ مشترک وصل است، پس ولتاژشان یکسان است.'];
+
+/* ===== solver.js: تحلیل گرهٔ اصلاح‌شده (MNA)، با یک گرهٔ مرجع برای هر بخش متصل =====
+   عناصر: {t:'r'|'w'|'a'|'v'|'b', a, b, v, r}
+   r مقاومت، w سیم، a آمپرسنج آرمانی، v ولت‌سنج آرمانی، b باتری (قطب + در a) با مقاومت درونی r */
+const GW=1e6,GV=1e-9;
+function solve1(N,els){let n=N;const R=[],S=[];
+els.forEach((e,k)=>{if(e.t=='b'){if(e.r>0){const x=n++;R.push([x,e.b,1/e.r]);S.push([e.a,x,e.v,k])}else S.push([e.a,e.b,e.v,k])}else R.push([e.a,e.b,e.t=='r'?1/e.v:e.t=='v'?GV:GW,k])});
+const M=n+S.length,A=Array.from({length:M},()=>new Float64Array(M+1));
+R.forEach(([a,b,g])=>{A[a][a]+=g;A[b][b]+=g;A[a][b]-=g;A[b][a]-=g});
+S.forEach(([p,m,v],j)=>{const c=n+j;A[p][c]+=1;A[m][c]-=1;A[c][p]+=1;A[c][m]-=1;A[c][M]=v});
+const par=[...Array(n).keys()],fd=x=>par[x]==x?x:(par[x]=fd(par[x]));R.forEach(([a,b])=>{par[fd(a)]=fd(b)});S.forEach(([p,m])=>{par[fd(p)]=fd(m)});
+const seen=new Set();for(let i=0;i<n;i++){const q=fd(i);if(!seen.has(q)){seen.add(q);A[i].fill(0);A[i][i]=1}}
+for(let c=0;c<M;c++){let p=c;for(let r=c+1;r<M;r++)if(Math.abs(A[r][c])>Math.abs(A[p][c]))p=r;[A[c],A[p]]=[A[p],A[c]];const d=A[c][c];if(Math.abs(d)<1e-300)continue;for(let r=0;r<M;r++)if(r!=c&&A[r][c]){const f=A[r][c]/d;for(let k=c;k<=M;k++)A[r][k]-=f*A[c][k]}}
+const x=A.map((row,i)=>row[i]?row[M]/row[i]:0),V=x.slice(0,N),I=els.map(()=>0);
+R.forEach(([a,b,g,k])=>{if(k!==undefined)I[k]=(x[a]-x[b])*g});
+S.forEach(([p,m,v,k],j)=>{I[k]=-x[n+j]});
+let short=false;for(let k=0;k<I.length;k++){if(Math.abs(I[k])<1e-4)I[k]=0;if(Math.abs(I[k])>1e3)short=true}
+return{V,I,short,hasBat:S.length>0}}
+
+/* باتری آرمانی که با سیم کوتاه شده جریان بی‌نهایت دارد؛ برای نمایش، با r=0.5Ω حل می‌کنیم و short=true برمی‌گردانیم */
+function solveNet(N,els){let o=solve1(N,els);if(o.short){o=solve1(N,els.map(e=>e.t=='b'&&!(e.r>0)?{...e,r:.5}:e));o.short=true}return o}
+
+/* ---------- آموزش ---------- */
+const L=[
+`<h3>۱) جریان و قانون اهم</h3><p>جریان الکتریکی آهنگ شارش بار است: <b>I = ΔQ ÷ Δt</b> (یکا: آمپر). جهت قراردادی جریان، در مدار بیرونی از قطب مثبت باتری به قطب منفی است. در انیمیشن‌های بازی، نقطه‌های نارنجی همین جهت را نشان می‌دهند.</p><div class="fm">V = I × R</div><p>ولتاژ بر حسب ولت، مقاومت بر حسب اهم (Ω).</p><h3>۲) حلقهٔ ساده</h3><p>وقتی یک باتری و چند مقاومت پشت هم در یک حلقه‌اند، جریان در همهٔ نقاط حلقه یکسان است. قاعدهٔ حلقه می‌گوید جمع افت‌های ولتاژ مقاومت‌ها برابر ولتاژ باتری است (باتری آرمانی، بدون مقاومت درونی).</p><div class="fm">V = V₁ + V₂ + … &nbsp; | &nbsp; R کل = R₁ + R₂ + …</div><div class="box"><b>مثال:</b> V = 12 ولت، R₁ = 2Ω و R₂ = 4Ω. مقاومت کل ۶Ω است، پس I = 12 ÷ 6 = 2A. افت‌ها: V₁ = 4V و V₂ = 8V که جمعشان ۱۲ ولت است.</div>`,
+`<h3>قاعدهٔ انشعاب (قانون جریان کیرشهف)</h3><p>نقطه‌ای که چند سیم در آن به هم می‌رسند «گره» نام دارد. بار الکتریکی در گره نه ساخته می‌شود و نه از بین می‌رود، بنابراین هر مقدار جریان که وارد گره می‌شود به همان اندازه خارج می‌شود.</p><div class="fm">ΣI ورودی = ΣI خروجی</div><div class="box"><b>مثال:</b> جریان‌های ۵A و ۳A وارد گره می‌شوند و جریان ۲A و جریان I از آن خارج می‌شود. 5 + 3 = 2 + I، پس I = 6A.</div><p>در مدار موازی، جریان کل برابر جمع جریان شاخه‌هاست:</p><div class="fm">I = I₁ + I₂ + I₃ + …</div><p>نکته: اگر جهت جریانی را نمی‌دانی، یک جهت فرض کن؛ منفی شدن پاسخ یعنی جهت واقعی برعکس است.</p>`,
+`<h3>مقاومت‌های متوالی</h3><p>اگر مقاومت‌ها پشت سر هم باشند، جریان یکسان است و مقاومت‌ها جمع می‌شوند.</p><div class="fm">R<sub>eq</sub> = R₁ + R₂ + R₃ + …</div><h3>مقاومت‌های موازی</h3><div class="fm">1/R<sub>eq</sub> = 1/R₁ + 1/R₂ + …</div><p>برای دو مقاومت: <b>R<sub>eq</sub> = R₁R₂ ÷ (R₁ + R₂)</b>. برای n مقاومت برابر R: <b>R ÷ n</b>. مقاومت معادل موازی همیشه از کوچک‌ترین مقاومت هم کوچک‌تر است.</p><h3>روش ساده‌سازی</h3><p>از دورترین بخش مدار نسبت به باتری شروع کن، هر دسته متوالی یا موازی را با یک مقاومت جایگزین کن، تا یک مقاومت کل بماند؛ سپس I = V ÷ R<sub>eq</sub>.</p><div class="box"><b>مثال:</b> ۳Ω و ۶Ω موازی: (3×6) ÷ 9 = 2Ω. با یک مقاومت ۴Ω متوالی، R<sub>eq</sub> = 6Ω.</div>`,
+`<h3>برابری ولتاژ در شاخه‌های موازی</h3><p>دو سر هر شاخهٔ موازی به همان دو گره وصل است؛ پس ولتاژ همهٔ شاخه‌ها با هم برابر است، حتی اگر مقاومت‌هایشان فرق کند.</p><div class="fm">V = I₁R₁ = I₂R₂ = I₃R₃</div><p>در نتیجه شاخه‌ای که مقاومت کمتری دارد جریان بیشتری می‌گیرد.</p><div class="box"><b>مثال:</b> باتری ۱۲ ولت به دو شاخهٔ ۳Ω و ۶Ω وصل است. I₁ = 12÷3 = 4A و I₂ = 12÷6 = 2A، پس جریان کل ۶A.</div><p>اگر پیش از بخش موازی یک مقاومت متوالی R<sub>s</sub> باشد و جریان کل I از آن بگذرد، ولتاژ بخش موازی چنین است:</p><div class="fm">V<sub>موازی</sub> = V<sub>باتری</sub> − I × R<sub>s</sub></div>`];
+const SRC='<p class="mut">منابع: D. Halliday, R. Resnick, J. Walker, «Fundamentals of Physics»، بخش مدارهای الکتریکی؛ R. Serway, J. Jewett, «Physics for Scientists and Engineers»، فصل جریان و مدارهای DC؛ کتاب فیزیک ۲ پایهٔ یازدهم (ایران).</p>';
+
+/* ---------- بانک سؤال ---------- */
+const o=x=>x+'Ω';
+const G=[[
+(N,m)=>{const R=rnd(1,m);return{sp:{V:N*R+'V',S:[o(R)],It:'I = ؟'},q:'جریان I در حلقه چند آمپر است؟',f:'I = V ÷ R',s:`I = ${N*R} ÷ ${R} = ${N}`}},
+(N,m)=>{const d=pick(divs(N)),R=N/d;return{sp:{V:'V = ؟',S:[o(R)],It:`I = ${d}A`},q:'ولتاژ باتری چند ولت است؟',f:'V = I × R',s:`V = ${d} × ${R} = ${N}`}},
+(N,m)=>{const I=rnd(1,4);return{sp:{V:N*I+'V',S:['R = ؟'],It:`I = ${I}A`},q:'مقاومت R چند اهم است؟',f:'R = V ÷ I',s:`R = ${N*I} ÷ ${I} = ${N}`}},
+(N,m)=>{const a=rnd(1,m),b=rnd(1,m);return{sp:{V:N*(a+b)+'V',S:[o(a),o(b)],It:'I = ؟'},q:'جریان حلقه چند آمپر است؟',f:'R کل = R₁ + R₂ ، I = V ÷ R کل',s:`R کل = ${a+b} ، I = ${N*(a+b)} ÷ ${a+b} = ${N}`}},
+(N,m)=>{const a=rnd(1,N-1),b=N-a;return{sp:{V:'V',S:[o(a),o(b)]},q:'مقاومت معادل مدار چند اهم است؟',f:'R کل = R₁ + R₂',s:`${a} + ${b} = ${N}`}},
+(N,m)=>{const I=rnd(1,3),R=rnd(1,m);return{sp:{V:I*R+N+'V',S:[o(R),'R₂'],It:`I = ${I}A`},q:'ولتاژ دو سر R₂ چند ولت است؟',f:'V باتری = V₁ + V₂ ، V₁ = I × R₁',s:`V₁ = ${I*R} ، V₂ = ${I*R+N} − ${I*R} = ${N}`}}],
+[
+(N)=>{const c=rnd(1,4),t=N+c,a=rnd(1,t-1);return{sp:{k:'node',in:[a+'A',t-a+'A'],out:[c+'A','؟']},q:'جریان مجهول (خروجی) چند آمپر است؟',f:'ΣI ورودی = ΣI خروجی',s:`${a}+${t-a} = ${c} + I ← I = ${N}`}},
+(N)=>{const a=rnd(1,4),t=N+a,b=rnd(1,t-1);return{sp:{k:'node',in:[a+'A','؟'],out:[b+'A',t-b+'A']},q:'جریان مجهول (ورودی) چند آمپر است؟',f:'ΣI ورودی = ΣI خروجی',s:`${a} + I = ${b} + ${t-b} ← I = ${N}`}},
+(N)=>{const n=Math.min(rnd(2,3),N),p=n==2?[rnd(1,N-1)]:[rnd(1,N-2)];if(n==2)p.push(N-p[0]);else{p.push(rnd(1,N-p[0]-1));p.push(N-p[0]-p[1])}return{sp:{V:'V',B:p.map((_,i)=>['R'+'₁₂₃'[i]]),il:p.map((x,i)=>`I${'₁₂₃'[i]} = ${x}A`),It:'I = ؟'},q:'جریان کل I چند آمپر است؟',f:'I = I₁ + I₂ + …',s:p.join(' + ')+' = '+N}},
+(N,m)=>{const R=rnd(1,m),R2=rnd(1,m);return{sp:{V:N*R+'V',B:[[o(R)],[o(R2)]],il:['I₁ = ؟','']},q:'جریان I₁ چند آمپر است؟',f:'I = V ÷ R (ولتاژ شاخه‌ها یکسان)',s:`I₁ = ${N*R} ÷ ${R} = ${N}`}},
+(N)=>{const a=rnd(1,4);return{sp:{V:'V',B:[['R₁'],['R₂']],il:['I₁ = '+a+'A','I₂ = ؟'],It:`I = ${N+a}A`},q:'جریان I₂ چند آمپر است؟',f:'I = I₁ + I₂',s:`I₂ = ${N+a} − ${a} = ${N}`}},
+(N)=>{const a=rnd(1,3),b=rnd(1,3),d=rnd(1,4),t=a+b+d-N;if(t<1)return null;return{sp:{k:'node',in:[a+'A',b+'A',t+'A'],out:[d+'A','؟']},q:'جریان مجهول خروجی چند آمپر است؟',f:'ΣI ورودی = ΣI خروجی',s:`${a}+${b}+${t} = ${d} + I ← I = ${N}`}}],
+[
+(N)=>{const k=rnd(1,Math.min(4,N-1)),r=N-k;return{sp:{V:'V',S:[o(r)],B:[[o(2*k)],[o(2*k)]]},q:'مقاومت معادل کل مدار چند اهم است؟',f:'موازی دو مقاومت برابر: R ÷ 2 ؛ سپس با متوالی جمع کن',s:`موازی: ${2*k} ÷ 2 = ${k} ، کل: ${r} + ${k} = ${N}`}},
+(N)=>{const k=rnd(1,2),r=rnd(1,3),e=r+k;return{sp:{V:N*e+'V',S:[o(r)],B:[[o(2*k)],[o(2*k)]],It:'I = ؟'},q:'جریان کل I چند آمپر است؟',f:'اول R معادل را بساز، سپس I = V ÷ R معادل',s:`R معادل = ${r} + ${k} = ${e} ، I = ${N*e} ÷ ${e} = ${N}`}},
+(N)=>{const n=rnd(2,3),R=n*N;return{sp:{V:'V',B:Array(n).fill([o(R)])},q:'مقاومت معادل چند اهم است؟',f:'n مقاومت برابر R موازی: R ÷ n',s:`${R} ÷ ${n} = ${N}`}},
+(N)=>{const a=rnd(1,2*N-1),b=2*N-a;return{sp:{V:'V',B:[[o(a),o(b)],[o(2*N)]]},q:'مقاومت معادل چند اهم است؟',f:'شاخهٔ متوالی را جمع کن، بعد دو مقاومت برابر را موازی کن',s:`شاخهٔ اول: ${a}+${b} = ${2*N} ؛ موازی با ${2*N}: ${N}`}},
+(N)=>{let a=rnd(1,3),b=rnd(1,3);if(N<=a+b){a=1;b=1}const k=N-a-b;return{sp:{V:'V',S:[o(a),o(b)],B:[[o(2*k)],[o(2*k)]]},q:'مقاومت معادل چند اهم است؟',f:'متوالی‌ها را جمع کن + موازی دو مقاومت برابر',s:`${a} + ${b} + (${2*k}÷2) = ${N}`}}],
+[
+(N,m)=>({sp:{V:N+'V',B:[[o(rnd(1,m))],['R₂']],il:['','V₂ = ؟']},q:'ولتاژ دو سر R₂ چند ولت است؟',f:'ولتاژ شاخه‌های موازی یکسان است',s:`V₂ = V باتری = ${N}`}),
+(N)=>{const d=pick(divs(N)),R=N/d;return{sp:{V:'V = ؟',B:[[o(R)],[o(rnd(1,6))]],il:[`I₁ = ${d}A`,'']},q:'ولتاژ باتری چند ولت است؟',f:'V = I₁ × R₁ (ولتاژ شاخه‌ها یکسان)',s:`V = ${d} × ${R} = ${N}`}},
+(N)=>{const b=rnd(1,3),V=N*b,r=pick(divs(V).filter(x=>x<=12));return{sp:{V:'V',B:[[o(r)],['R₂ = ؟']],il:[`I₁ = ${V/r}A`,`I₂ = ${b}A`]},q:'مقاومت R₂ چند اهم است؟',f:'V = I₁R₁ = I₂R₂',s:`V = ${V/r}×${r} = ${V} ، R₂ = ${V} ÷ ${b} = ${N}`}},
+(N,m)=>{const I=rnd(1,3),Rs=rnd(1,m);return{sp:{V:I*Rs+N+'V',S:[o(Rs)],B:[[o(rnd(1,6))],[o(rnd(1,6))]],It:`I = ${I}A`,il:['','']},q:'ولتاژ دو سر مجموعهٔ شاخه‌های موازی چند ولت است؟',f:'V موازی = V باتری − I × R متوالی',s:`${I*Rs+N} − ${I}×${Rs} = ${N}`}},
+(N)=>{const r=[rnd(1,5),rnd(1,5),rnd(1,5)];return{sp:{V:N*r[2]+'V',B:r.map(x=>[o(x)]),il:['','','I₃ = ؟']},q:'جریان I₃ چند آمپر است؟',f:'I = V ÷ R (ولتاژ همهٔ شاخه‌ها یکسان)',s:`I₃ = ${N*r[2]} ÷ ${r[2]} = ${N}`}}]];
+const POOL=[[[0,1,2,4],[0,1,2,3,5],[3,5,1,2]],[[0,1,2,4],[0,1,2,3,4],[5,3,2,4,1]],[[0,2],[0,1,2,4],[3,4,1,2]],[[0,1,4],[0,1,2,4],[2,3,1,4]]];
+G[0].push((N,m)=>{const I=rnd(1,3),R=rnd(1,m);return{sp:{V:I*(N+R)+'V',S:['R₁ = ؟',o(R)],It:`I = ${I}A`},q:'مقاومت R₁ چند اهم است؟',f:'R کل = V ÷ I ، R₁ = R کل − R₂',s:`R کل = ${I*(N+R)} ÷ ${I} = ${N+R} ، R₁ = ${N+R} − ${R} = ${N}`}});
+G[1].push(N=>{if(N%2)return null;const r=rnd(1,4);return{sp:{V:N*r+'V',B:[[o(2*r)],[o(2*r)]],It:'I = ؟'},q:'جریان کل I چند آمپر است؟',f:'هر شاخه: I = V ÷ R ؛ سپس جریان‌ها را جمع کن',s:`هر شاخه: ${N*r} ÷ ${2*r} = ${N/2}A ، جمع: ${N}`}});
+G[2].push(N=>{const ds=divs(N).filter(x=>x>=2&&x<=12),d=ds.length?pick(ds):N,k=rnd(1,Math.min(3,d-1)),r=d-k,I=N/d;return{sp:{V:'V = ؟',S:[o(r)],B:[[o(2*k)],[o(2*k)]],It:`I = ${I}A`},q:'ولتاژ باتری چند ولت است؟',f:'R معادل را بساز؛ V = I × R معادل',s:`R معادل = ${r} + ${k} = ${d} ، V = ${I} × ${d} = ${N}`}},
+N=>{const k=rnd(1,2),Rs=rnd(1,3);return{sp:{V:2*N*(Rs+k)+'V',S:[o(Rs)],B:[[o(2*k)],[o(2*k)]],It:'I = ؟'},q:'جریان هر شاخهٔ موازی چند آمپر است؟',f:'I کل = V ÷ R معادل ؛ دو شاخهٔ برابر جریان را مساوی تقسیم می‌کنند',s:`R معادل = ${Rs+k} ، I کل = ${2*N} ، هر شاخه ${N}`}},
+N=>{const d=pick(divs(N).filter(x=>x<=9)),I=N/d,a=rnd(1,6);return{sp:{V:I*(a+d)+'V',S:[o(a),o(d)],It:'I = ؟'},q:'ولتاژ دو سر مقاومت دوم چند ولت است؟',f:'I = V ÷ R کل ، V₂ = I × R₂',s:`R کل = ${a+d} ، I = ${I} ، V₂ = ${I} × ${d} = ${N}`}});
+G[3].push(N=>{const ds=divs(N).filter(x=>x>=2&&x<=12),d=ds.length?pick(ds):N,a=rnd(1,d-1),I=N/d;return{sp:{V:'V = ؟',B:[[o(a),o(d-a)],[o(rnd(1,6))]],il:[`I₁ = ${I}A`,'']},q:'ولتاژ باتری چند ولت است؟',f:'V = I₁ × (R_a + R_b) ؛ ولتاژ شاخه‌ها یکسان است',s:`${a} + ${d-a} = ${d} ، V = ${I} × ${d} = ${N}`}});
+POOL[0]=[[0,1,2,4],[0,1,2,3,5,6],[3,5,6,1,2]];POOL[1]=[[0,1,2,4],[0,1,2,3,4,6],[5,3,2,4,1,6]];POOL[2]=[[0,2,5],[0,1,2,4,5,6,7],[3,4,1,5,6,7,2]];POOL[3]=[[0,1,4],[0,1,2,4,5],[2,3,1,4,5]];
+
+TIP.push('جریان کل از شاخه‌های موازی می‌گذرد؛ ولتاژ شاخه‌ها یکسان است و جریان هر شاخه I = V ÷ R همان شاخه است.','باتری واقعی مقاومت درونی r دارد که با R متوالی است: I = ε ÷ (R + r) و V پایانه = ε − I·r.','آمپرسنج آرمانی (R = 0) متوالی بسته می‌شود؛ ولت‌سنج آرمانی (R = ∞) موازی بسته می‌شود و جریانی نمی‌گیرد.');
+G[4]=[N=>{const ns=[2,3,4].filter(x=>N%x==0);if(!ns.length)return null;const n=pick(ns),R=rnd(1,6),I=N/n;return{sp:{V:I*R+'V',B:Array(n).fill([o(R)]),It:'I = ؟'},q:`${n} شاخهٔ برابر به باتری وصل‌اند. جریان کل I چند آمپر است؟`,f:'هر شاخه I = V ÷ R ؛ جریان‌ها را جمع کن',s:`هر شاخه ${I}A ، جمع: ${n} × ${I} = ${N}`}},
+N=>{const a=rnd(1,5),b=rnd(1,5);return{sp:{V:N*(a+b)+'V',B:[[o(a),o(b)],[o(rnd(2,9))]],il:['I₁ = ؟','']},q:'جریان شاخهٔ اول (دو مقاومت متوالی) چند آمپر است؟',f:'مقاومت شاخه = جمع متوالی‌ها ؛ I = V ÷ R شاخه',s:`R شاخه = ${a+b} ، I₁ = ${N*(a+b)} ÷ ${a+b} = ${N}`}},
+N=>{const k=rnd(1,3),Rs=rnd(1,3);return{sp:{V:N*(Rs+k)+'V',S:[o(Rs)],B:Array(3).fill([o(3*k)]),It:'I = ؟'},q:'جریان کل I چند آمپر است؟',f:'سه مقاومت برابر موازی: R ÷ 3 ؛ سپس جمع با متوالی ؛ I = V ÷ R کل',s:`موازی: ${3*k} ÷ 3 = ${k} ، R کل = ${Rs+k} ، I = ${N}`}},
+N=>{const k=rnd(1,Math.min(3,N-1)),R1=N-k;return{sp:{V:'V',S:[o(R1)],B:[[o(2*k)],[o(k),o(k)]]},q:'مقاومت معادل کل مدار چند اهم است؟',f:'شاخهٔ متوالی را جمع کن، بعد دو شاخهٔ برابر را موازی کن',s:`شاخه‌ها هر دو ${2*k}Ω ← موازی ${k} ، کل ${R1} + ${k} = ${N}`}},
+N=>{const a=rnd(1,5),b=rnd(1,5);return{sp:{V:'V',B:[['R₁'],['R₂'],['R₃']],il:[`I₁ = ${a}A`,`I₂ = ${b}A`,'I₃ = ؟'],It:`I = ${N+a+b}A`},q:'جریان I₃ چند آمپر است؟',f:'I = I₁ + I₂ + I₃',s:`I₃ = ${N+a+b} − ${a} − ${b} = ${N}`}}];
+G[5]=[(N,m)=>{const R=rnd(1,m),r=rnd(1,3);return{sp:{V:N*(R+r)+'V',S:[o(R)],r:`r=${r}Ω`,It:'I = ؟'},q:'باتری مقاومت درونی دارد. جریان حلقه چند آمپر است؟',f:'I = ε ÷ (R + r)',s:`I = ${N*(R+r)} ÷ (${R}+${r}) = ${N}`}},
+N=>{const R=pick(divs(N).filter(x=>x<=12)),I=N/R,r=rnd(1,3);return{sp:{V:I*(R+r)+'V',S:[o(R)],r:`r=${r}Ω`,It:'I = ؟'},q:'ولتاژ پایانهٔ باتری (ولتاژ دو سر مقاومت R) چند ولت است؟',f:'I = ε ÷ (R + r) ، V پایانه = I × R',s:`I = ${I*(R+r)} ÷ ${R+r} = ${I} ، V = ${I} × ${R} = ${N}`}},
+N=>{const ds=divs(N).filter(x=>x>=2&&x<=12),d=ds.length?pick(ds):N,I=N/d,r=rnd(1,d-1),R=d-r;return{sp:{V:'ε = ؟',S:[o(R)],r:`r=${r}Ω`,It:`I = ${I}A`},q:'نیروی محرکهٔ باتری ε چند ولت است؟',f:'ε = I × (R + r)',s:`ε = ${I} × (${R}+${r}) = ${N}`}},
+(N,m)=>{const I=rnd(1,3),R=rnd(1,m);return{sp:{V:I*(R+N)+'V',S:[o(R)],r:'r = ؟',It:`I = ${I}A`},q:'مقاومت درونی r چند اهم است؟',f:'R کل = ε ÷ I ، r = R کل − R',s:`R کل = ${I*(R+N)} ÷ ${I} = ${R+N} ، r = ${R+N} − ${R} = ${N}`}},
+N=>{const r=rnd(1,4);return{sp:{V:N*r+'V',r:`r=${r}Ω`,It:'I = ؟'},q:'پایانه‌های باتری با سیم به هم وصل شده‌اند (اتصال کوتاه). جریان چند آمپر است؟',f:'I = ε ÷ r',s:`I = ${N*r} ÷ ${r} = ${N}`}}];
+G[6]=[(N,m)=>{const R=rnd(1,m);return{sp:{V:N*R+'V',S:['@A',o(R)]},q:'آمپرسنج آرمانی چند آمپر را نشان می‌دهد؟',f:'آمپرسنج متوالی است و جریان حلقه را می‌خواند: I = V ÷ R',s:`I = ${N*R} ÷ ${R} = ${N}`}},
+(N,m)=>{const R=rnd(1,m),R2=rnd(1,m);return{sp:{V:N*R+'V',B:[['@A',o(R)],[o(R2)]]},q:'آمپرسنج در شاخهٔ اول است. عدد آن چند آمپر است؟',f:'ولتاژ شاخه برابر باتری است: I = V ÷ R شاخه',s:`I = ${N*R} ÷ ${R} = ${N}`}},
+(N,m)=>{const R2=pick(divs(N).filter(x=>x<=9)),I=N/R2,R1=rnd(1,m);return{sp:{V:I*(R1+R2)+'V',S:[o(R1)],B:[[o(R2)],['@V']]},q:'ولت‌سنج آرمانی موازی با R₂ بسته شده است. چند ولت را نشان می‌دهد؟',f:'ولت‌سنج جریان نمی‌گیرد: I = V ÷ (R₁+R₂) ؛ V₂ = I × R₂',s:`I = ${I*(R1+R2)} ÷ ${R1+R2} = ${I} ، V₂ = ${I} × ${R2} = ${N}`}},
+N=>{const k=rnd(1,3);return{sp:{V:N*k+'V',S:['@A'],B:[[o(2*k)],[o(2*k)],['@V']]},q:'ولت‌سنج موازی بسته شده و آمپرسنج جریان کل را می‌خواند. آمپرسنج چند آمپر را نشان می‌دهد؟',f:'ولت‌سنج جریان نمی‌گیرد؛ دو مقاومت برابر موازی: R ÷ 2',s:`R معادل = ${k} ، I = ${N*k} ÷ ${k} = ${N}`}}];
+POOL[2]=[[0,2,5],[0,1,2,4,5,6,7],[3,4,1,5,6,7,2]];POOL[4]=[[0,4],[0,1,4,2],[2,3,1,4]];POOL[5]=[[0,4],[0,1,2,4],[1,2,3,0,4]];POOL[6]=[[0,1],[0,1,2,3],[2,3,1,0]];
+const DIDX={};
+function mkQ(N,t,lv,used){const m=[4,6,9,9][lv];for(let k=0;k<30;k++){const tp=t==7?rnd(0,6):(t>0&&Math.random()<.3?rnd(0,t-1):t),dl=DIDX[tp]&&DIDX[tp][Math.min(lv,2)],gi=dl&&Math.random()<.35?pick(dl):pick(POOL[tp][Math.min(lv,2)]),id=tp+'-'+gi;if(used.has(id)&&k<20)continue;const q=G[tp][gi](N,m);if(!q)continue;used.add(id);q.tp=tp;return q}return Object.assign(G[0][0](N,6),{tp:0})}
+
+/* ---------- رسم مدار ---------- */
+function dots(path,L,iv){iv=(iv||[]).sort((a,b)=>a[0]-b[0]);const p=[0],t=[0];let T=0,pos=0;const seg=(a,b,w)=>{if(b>a){T+=(b-a)*w;p.push(b);t.push(T)}};iv.forEach(([a,b])=>{seg(pos,a,1);seg(a,b,3.5);pos=b});seg(pos,L,1);const dur=T/(70*SPD),kt=t.map(x=>(x/T).toFixed(4)).join(';'),kp=p.map(x=>(x/L).toFixed(4)).join(';');let s='';const N=Math.max(3,Math.round(L/18));for(let k=0;k<N;k++)s+=`<circle r="3.3" class="dot"><animateMotion dur="${dur.toFixed(1)}s" begin="-${(k*dur/N).toFixed(1)}s" repeatCount="indefinite" calcMode="linear" keyTimes="${kt}" keyPoints="${kp}" path="${path}"/></circle>`;return s}
+function circ(sp){
+if(sp.k=='node'){const I=sp.in,Ot=sp.out,cx=190,cy=115,Y=(i,n)=>n==1?cy:45+i*(140/(n-1));
+let s='<svg viewBox="0 0 380 230" class="ckt"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ar"/></marker></defs>';
+const add=(d,len)=>{s+=`<path d="${d}" class="w" marker-end="url(#ah)"/>`+dots(d,len,0)};
+I.forEach((l,i)=>{const y=Y(i,I.length);add(`M40 ${y}L${cx-18} ${cy+(y-cy)*.2}`,160);s+=`<text class="t" x="42" y="${y-8}">${l}</text>`});
+Ot.forEach((l,i)=>{const y=Y(i,Ot.length);add(`M${cx+18} ${cy+(y-cy)*.2}L336 ${y}`,160);s+=`<text class="t" x="336" y="${y-8}" text-anchor="end">${l}</text>`});
+return s+`<circle cx="${cx}" cy="${cy}" r="15" class="dot"/><text class="t" x="${cx}" y="${cy+30}" text-anchor="middle">گره</text></svg>`}
+const S=sp.S||[],B=sp.B||[],n=B.length,xs=n?(n==1?[300]:B.map((_,i)=>250+i*(110/(n-1)))):[330],xr=xs[xs.length-1];
+const M=(x,y,l)=>`<circle cx="${x}" cy="${y}" r="13" fill="var(--card)" stroke="var(--ink)" stroke-width="2.2"/><text class="t" x="${x}" y="${y+4.5}" text-anchor="middle" style="font-weight:700">${l[1]}</text>`;
+let s='<svg viewBox="0 0 380 230" class="ckt">',R='',A='',D='',Lb='';
+s+=`<path class="w" d="M40 106V40H${xr}V200H40V118"/>`;if(n>1)xs.forEach(x=>s+=`<path class="w" d="M${x} 40V200"/>`);
+S.forEach((l,j)=>{const x=90+64*j;if(l[0]=='@'){R+=M(x,40,l);return}R+=`<rect class="rz" data-l="${l}" x="${x-24}" y="30" width="48" height="20" rx="3"/>`;Lb+=`<text class="t" x="${x}" y="22" text-anchor="middle">${l}</text>`});
+B.forEach((br,i)=>{const x=xs[i],k=br.length;br.forEach((l,j)=>{const y=40+160*(j+1)/(k+1);if(l[0]=='@'){R+=M(x,y,l);return}R+=`<rect class="rz" data-l="${l}" x="${x-10}" y="${y-20}" width="20" height="40" rx="3"/>`;Lb+=`<text class="t" x="${x+14}" y="${y+4}">${l}</text>`});
+const y0=40+160/(k+1)-20;if(sp.il&&sp.il[i])Lb+=`<text class="t" x="${x}" y="${y0-24}" text-anchor="middle" style="font-weight:700">${sp.il[i]}</text>`;
+A+=`<path class="ar" d="M${x-6} 52L${x} 62L${x+6} 52Z"/>`});
+if(!n)A+=`<path class="ar" d="M${xr-6} 100L${xr} 110L${xr+6} 100Z"/>`;
+A+=`<path class="ar" d="M34 84L40 74L46 84Z"/><path class="ar" d="M118 34L128 40L118 46Z"/>`;
+(n>1?xs:[xr]).forEach((x,i)=>{if(n>1&&(B[i]||[])[0]=='@V')return;const p=`M40 106V40H${x}V200H40V118`,iv=(sp.r?[[40,60]]:[]).concat(S.map((_,j)=>{const c=90+64*j;return[c+2,c+50]}));(B[n>1?i:0]||[]).forEach((_,j,a)=>{const y=40+160*(j+1)/(a.length+1);iv.push([x+y-34,x+y+6])});D+=dots(p,2*x+228,iv)});
+const bat=`<rect x="28" y="102" width="24" height="20" fill="var(--card)"/><line x1="26" y1="106" x2="54" y2="106" stroke="var(--ink)" stroke-width="3.5"/><line x1="33" y1="118" x2="47" y2="118" stroke="var(--ink)" stroke-width="3.5"/><text class="t" x="16" y="108" text-anchor="end" style="font-weight:700;fill:var(--o)">+</text><text class="t" x="16" y="124" text-anchor="end">−</text><text class="t" x="58" y="116" style="font-weight:700">${sp.V||''}</text>`;
+if(sp.It)Lb+=`<text class="t" x="48" y="82" style="font-weight:700;fill:var(--o)">${sp.It}</text>`;
+if(sp.r){R+=`<rect class="rz" data-l="${sp.r}" x="30" y="46" width="20" height="20" rx="3"/>`;Lb+=`<text class="t" x="54" y="60">${sp.r}</text>`}return s+bat+R+A+D+Lb+'</svg>'}
+function rd(e){document.querySelectorAll('.rz').forEach(x=>x.classList.remove('on'));e.classList.add('on');$('#rdo').textContent='عنصر '+e.dataset.l+' ← ولتاژ دو سر مقاومت از V = I × R به دست می‌آید؛ جریان و مقاومتش را پیدا کن.'}
+
+/* ---------- تولید جدول یکتا ---------- */
+const BASE="534678912672195348198342567859761423426853791713924856961537284287419635345286179";
+function mkSol(){const p=sh([1,2,3,4,5,6,7,8,9]),f=()=>sh([0,1,2]).flatMap(b=>sh([0,1,2]).map(x=>b*3+x)),R=f(),C=f();return Array.from({length:81},(_,i)=>p[+BASE[R[i/9|0]*9+C[i%9]]-1])}
+function uniq(sol,giv,cages){const g=Array(81).fill(0),Rr=Array(9).fill(0),Cc=Array(9).fill(0),Bb=Array(9).fill(0),co=Array(81).fill(-1);cages.forEach((c,i)=>c.cells.forEach(x=>co[x]=i));
+const cu=cages.map(()=>0),cs=cages.map(()=>0),cr=cages.map(c=>c.cells.length);
+const ok=(i,d)=>{const r=i/9|0,c=i%9,b=(r/3|0)*3+(c/3|0),m=1<<d;if((Rr[r]|Cc[c]|Bb[b])&m)return 0;const k=co[i];if(k>=0){if(cu[k]&m)return 0;const rem=cr[k]-1,s=cs[k]+d,t=cages[k].sum;if(s>t||(rem==0?s!=t:(t-s<rem||t-s>9*rem)))return 0}return 1};
+const put=(i,d,a)=>{const r=i/9|0,c=i%9,b=(r/3|0)*3+(c/3|0),m=1<<d;if(a){Rr[r]|=m;Cc[c]|=m;Bb[b]|=m}else{Rr[r]&=~m;Cc[c]&=~m;Bb[b]&=~m}g[i]=a?d:0;const k=co[i];if(k>=0){cu[k]^=m;cs[k]+=a?d:-d;cr[k]+=a?-1:1}};
+giv.forEach(i=>put(i,sol[i],1));let n=0,nodes=0;
+const rec=()=>{if(++nodes>40000)return;let bi=-1,bc=10;for(let i=0;i<81;i++)if(!g[i]){let c=0;for(let d=1;d<10;d++)c+=ok(i,d);if(c<bc){bc=c;bi=i;if(c<2)break}}if(bi<0){n++;return}for(let d=1;d<10&&n<2;d++)if(ok(bi,d)){put(bi,d,1);rec();put(bi,d,0)}};
+rec();return n==1&&nodes<=40000}
+const adj=i=>{const r=i/9|0,c=i%9,a=[];if(r>0)a.push(i-9);if(r<8)a.push(i+9);if(c>0)a.push(i-1);if(c<8)a.push(i+1);return a};
+function tile(sol,mx){const co=Array(81).fill(-1),cg=[];
+for(const s of sh([...Array(81).keys()])){if(co[s]>=0)continue;const cells=[s],t=rnd(2,mx);
+while(cells.length<t){const nb=cells.flatMap(adj).filter(x=>co[x]<0&&!cells.includes(x)&&!cells.some(y=>sol[y]==sol[x]));if(!nb.length)break;cells.push(pick(nb))}
+cells.forEach(x=>co[x]=cg.length);cg.push({cells})}
+for(let i=0;i<cg.length;i++)if(cg[i].cells.length==1){const x=cg[i].cells[0],nbs=adj(x).filter(y=>{const j=co[y];return j!=i&&cg[j].cells.length>0&&cg[j].cells.length<mx&&!cg[j].cells.some(z=>sol[z]==sol[x])});if(!nbs.length)return null;const j=co[pick(nbs)];cg[j].cells.push(x);co[x]=j;cg[i].cells=[]}
+const out=cg.filter(c=>c.cells.length);out.forEach(c=>{c.cells.sort((a,b)=>a-b);c.sum=c.cells.reduce((a,x)=>a+sol[x],0)});return out}
+function gen(lv){const K=[30,16,8,0][lv],mx=[4,4,3,3][lv],tr=[1,12,40,80][lv];let sol,cages,free;
+for(let a=0;;a++){sol=mkSol();cages=tile(sol,mx);if(!cages)continue;free=sh([...Array(81).keys()]);if(a>=tr)break;const giv=new Set(free.slice(0,K));if(uniq(sol,giv,cages))return{sol,cages,giv}}
+let k=K;while(k<=81){const giv=new Set(free.slice(0,k));if(uniq(sol,giv,cages))return{sol,cages,giv};k+=3}}
+
+/* ---------- صفحه‌ها ---------- */
+const app=$('#app'),stars=k=>P[k]?'★'.repeat(P[k])+'☆'.repeat(3-P[k]):'☆☆☆';
+function home(){LS=null;SPD=1;let h=rs0()+'<div class="card"><h2>به دنکی‌کو خوش آمدی!</h2><p class="mut">دنکی (電気) یعنی برق و «کو» برگرفته از سودوکو است. اول درس را بخوان، بعد با حل مدارها، قفس‌های سودوکو را باز کن.</p></div>';
+T.forEach((t,i)=>{h+=`<div class="card"><h3>${t.i} ${t.n}</h3><div class="r2">${i<7?`<button onclick="lesson(${i})">📖 آموزش</button>`:''}<button class="p" onclick="levels(${i})">🎮 بازی</button></div><div class="st">${[0,1,2,3].map(l=>stars(i+'-'+l)).join(' · ')}</div></div>`});
+app.innerHTML=h+'<div class="card mut">هر سطح سه ستاره دارد: زمان، مدارها و قلب‌ها. پنج قلب داری و هر خطا (در عدد جدول یا پاسخ مدار) یکی را می‌گیرد.</div>'}
+const FG=[[{V:'12V',S:['6Ω'],It:'I = 2A'},{V:'12V',S:['2Ω','4Ω'],It:'I = 2A'}],[{k:'node',in:['5A','3A'],out:['2A','I = ؟']}],[{V:'V',S:['2Ω','3Ω','4Ω']},{V:'V',B:[['3Ω'],['6Ω']]},{V:'V',S:['4Ω'],B:[['6Ω'],['3Ω']]}],[{V:'12V',B:[['3Ω'],['6Ω']],il:['I₁ = 4A','I₂ = 2A'],It:'I = 6A'}]];
+const EX=[[{h:'<h3>اشتباه‌های رایج</h3><p>۱) جهت جریان از قطب مثبت (+) باتری شروع می‌شود، نه منفی. ۲) در حلقهٔ ساده جریان بین مقاومت‌ها تقسیم نمی‌شود؛ همه جریان یکسان دارند. ۳) این ولتاژ باتری است که بین مقاومت‌ها تقسیم می‌شود.</p>',sp:{V:'9V',S:['1Ω','2Ω'],It:'I = 3A'}},
+{h:'<h3>تمرین</h3><p>باتری ۲۰ ولت به مقاومت‌های ۳Ω و ۷Ω پشت هم وصل است. جریان حلقه و ولتاژ دو سر ۷Ω را بیاب.</p><details><summary>پاسخ</summary>R کل = 10Ω ، I = 20 ÷ 10 = 2A. ولتاژ ۷Ω: V = 2 × 7 = 14V.</details>',sp:{V:'20V',S:['3Ω','7Ω'],It:'I = ؟'}}],
+[{h:'<h3>انشعاب در مدار موازی</h3><p>گره‌های بالا و پایین شاخه‌ها محل انشعاب‌اند. جریان کل ۶A به دو شاخه تقسیم می‌شود (۴A + ۲A). شاخهٔ کم‌مقاومت‌تر جریان بیشتری می‌گیرد و پایین گره، جریان‌ها دوباره جمع می‌شوند.</p>',sp:{V:'12V',B:[['3Ω'],['6Ω']],il:['I₁ = 4A','I₂ = 2A'],It:'I = 6A'}},
+{h:'<h3>تمرین</h3><p>جریان ۹A وارد گره‌ای می‌شود و جریان‌های ۲A و ۳A از آن خارج می‌شوند. جریان خروجی سوم چقدر است؟</p><details><summary>پاسخ</summary>9 = 2 + 3 + I ← I = 4A.</details>',sp:{k:'node',in:['9A'],out:['2A','3A','؟']}}],
+[{h:'<h3>مثال کامل</h3><p>باتری ۱۲ ولت، مقاومت ۴Ω متوالی، و ۶Ω و ۳Ω موازی. موازی: (6×3)÷9 = 2Ω. مقاومت کل = 4 + 2 = 6Ω. جریان کل I = 12 ÷ 6 = 2A.</p>',sp:{V:'12V',S:['4Ω'],B:[['6Ω'],['3Ω']],It:'I = 2A'}},
+{h:'<h3>تمرین</h3><p>مقاومت معادل ۱۲Ω و ۴Ω موازی را بیاب. اگر با ۱Ω متوالی شوند، مقاومت کل چند است؟</p><details><summary>پاسخ</summary>(12×4)÷16 = 3Ω. مقاومت کل = 3 + 1 = 4Ω.</details>',sp:{V:'V',S:['1Ω'],B:[['12Ω'],['4Ω']]}}],
+[{h:'<h3>ترکیب با مقاومت متوالی</h3><p>باتری ۲۰V و جریان ۲A از مقاومت متوالی ۳Ω می‌گذرد: افت ولتاژ آن ۶V است و ولتاژ مشترک شاخه‌های موازی ۱۴V می‌ماند. جریان هر شاخهٔ ۱۴Ω برابر ۱۴÷۱۴ = ۱A است (جمع ۲A).</p>',sp:{V:'20V',S:['3Ω'],B:[['14Ω'],['14Ω']],It:'I = 2A'}},
+{h:'<h3>تمرین</h3><p>در دو شاخهٔ موازی، شاخهٔ اول ۴Ω با جریان ۳A و شاخهٔ دوم R₂ با جریان ۲A است. R₂ را بیاب.</p><details><summary>پاسخ</summary>V = 3×4 = 12V ، R₂ = 12 ÷ 2 = 6Ω.</details>',sp:{V:'V',B:[['4Ω'],['R₂ = ؟']],il:['I₁ = 3A','I₂ = 2A']}}]];
+L.push(`<h3>مدار چندحلقه‌ای با یک باتری</h3><p>وقتی مدار بیش از دو مسیر بسته دارد، معمولاً چند شاخهٔ موازی داریم. هر شاخه همراه باتری یک «حلقه» می‌سازد و جریان‌های شاخه‌ها در گره‌ها جمع می‌شوند.</p><div class="fm">I = I₁ + I₂ + I₃ ، V = I₁R₁ = I₂R₂ = I₃R₃</div><div class="box"><b>مثال:</b> V = 12 ولت و شاخه‌های ۶Ω و ۳Ω و ۲Ω: جریان‌ها ۲A و ۴A و ۶A و جریان کل ۱۲A است.</div><h3>روش گام‌به‌گام</h3><p>۱) گره‌ها و شاخه‌ها را پیدا کن. ۲) مقاومت‌های متوالی هر شاخه را جمع کن. ۳) شاخه‌های موازی را با فرمول موازی یکی کن. ۴) حاصل را با مقاومت‌های متوالی بیرونی جمع کن. ۵) I = V ÷ R کل را بیاب و برای جریان هر شاخه به عقب برگرد.</p>`,`<h3>باتری واقعی و مقاومت درونی</h3><p>باتری آرمانی ولتاژ ثابت دارد، ولی باتری واقعی یک مقاومت درونی r دارد که با مدار بیرونی متوالی است. نیروی محرکهٔ باتری را ε می‌نامیم.</p><div class="fm">I = ε ÷ (R + r)</div><div class="fm">V<sub>پایانه</sub> = ε − I·r = I·R</div><div class="box"><b>مثال:</b> ε = 12V، r = 1Ω و R = 5Ω: I = 12 ÷ 6 = 2A. افت درونی ۲V است و ولتاژ پایانه 12 − 2 = 10V که همان I×R است.</div><h3>اتصال کوتاه</h3><p>اگر پایانه‌ها را با سیم ایده‌آل به هم وصل کنیم (R = 0)، بیشترین جریان می‌گذرد: <b>I = ε ÷ r</b> و ولتاژ پایانه صفر می‌شود.</p>`,`<h3>آمپرسنج</h3><p>آمپرسنج جریان مسیری را می‌خواند که در آن قرار گرفته؛ پس باید در مسیر جریان و <b>متوالی</b> بسته شود. آمپرسنج آرمانی مقاومت صفر دارد و مدار را تغییر نمی‌دهد.</p><h3>ولت‌سنج</h3><p>ولت‌سنج اختلاف پتانسیل دو نقطه را می‌خواند؛ پس باید <b>موازی</b> با همان قطعه بسته شود. ولت‌سنج آرمانی مقاومت بی‌نهایت دارد و جریانی از آن نمی‌گذرد.</p><div class="fm">آمپرسنج: R ≈ 0 (متوالی) &nbsp;|&nbsp; ولت‌سنج: R ≈ ∞ (موازی)</div><div class="box"><b>مثال:</b> باتری ۱۲V و مقاومت ۴Ω: آمپرسنج ۱۲ ÷ ۴ = ۳A و ولت‌سنج دو سر مقاومت ۱۲V را نشان می‌دهد.</div>`);
+FG.push([{V:'12V',B:[['6Ω'],['3Ω'],['2Ω']],il:['I₁ = 2A','I₂ = 4A','I₃ = 6A'],It:'I = 12A'},{V:'V',S:['1Ω'],B:[['2Ω','4Ω'],['6Ω'],['3Ω']]}],[{V:'12V',S:['5Ω'],r:'r=1Ω',It:'I = 2A'},{V:'12V',r:'r=2Ω',It:'I = 6A'}],[{V:'12V',S:['@A','4Ω'],It:'A = 3A'},{V:'12V',B:[['4Ω'],['@V']],il:['','V = 12V']}]);
+const LP=(m,t)=>({h:`<h3>🎛 خودت امتحان کن</h3><p>${t}</p>`,lab:m});
+EX.push([{h:'<h3>تمرین</h3><p>سه شاخهٔ ۴Ω و ۴Ω و ۲Ω به باتری ۸ ولت وصل‌اند. جریان کل چند آمپر است؟</p><details><summary>پاسخ</summary>جریان‌ها ۲A و ۲A و ۴A هستند؛ جمع: ۸A.</details>',sp:{V:'8V',B:[['4Ω'],['4Ω'],['2Ω']],It:'I = ؟'}}],[{h:'<h3>تمرین</h3><p>ε = 9V ، r = 1Ω و R = 8Ω. جریان و ولتاژ پایانه را بیاب.</p><details><summary>پاسخ</summary>I = 9 ÷ 9 = 1A ؛ V پایانه = 1 × 8 = 8V.</details>',sp:{V:'9V',S:['8Ω'],r:'r=1Ω',It:'I = ؟'}}],[{h:'<h3>تمرین</h3><p>در حلقهٔ ۱۸ ولت با R₁ = 2Ω و R₂ = 4Ω، آمپرسنج و ولت‌سنج دو سر R₂ چه می‌خوانند؟</p><details><summary>پاسخ</summary>I = 18 ÷ 6 = 3A ؛ V₂ = 3 × 4 = 12V.</details>',sp:{V:'18V',S:['@A','2Ω','4Ω']}}]);
+EX[0].push(LP(0,'ولتاژ و مقاومت‌ها را تغییر بده و ببین جریان حلقه چطور عوض می‌شود. جریان بیشتر یعنی الکترون‌ها تندتر.'));EX[1].push(LP(1,'در حالت موازی، جریان کل همیشه برابر جمع جریان شاخه‌هاست.'));EX[2].push(LP(1,'مقاومت معادل موازی را ببین: همیشه از کوچک‌ترین مقاومت کمتر است.'));EX[3].push(LP(1,'مقاومت هر شاخه را عوض کن؛ ولتاژ شاخه‌ها همیشه با هم برابر می‌ماند.'));EX[4].push(LP(1,'شاخه‌های موازی را بررسی کن و جمع جریان‌ها را ببین.'));EX[5].push(LP(2,'مقاومت درونی r را زیاد کن و ببین ولتاژ پایانه چطور افت می‌کند.'));EX[6].push(LP(0,'در حلقهٔ متوالی جریان همه‌جا یکی است؛ همان چیزی که آمپرسنج می‌خواند.'));
+const PG=i=>L[i].split('<h3>').filter(x=>x.trim()).map((x,k)=>({h:'<h3>'+x,sp:FG[i][k]})).concat(EX[i]);
+let LS=null,tx=0;
+function lesson(i,k,keep){k=k||0;if(!keep)snd('page');const pg=PG(i),n=pg.length,Q=pg[k];LS={i,k,n};if(Q.lab!==undefined&&!keep)LB.m=Q.lab;if(Q.lab===undefined)SPD=1;RL=()=>lesson(i,k,1);
+app.innerHTML=`<div class="card"><h2>${T[i].i} ${T[i].n}</h2>${Q.sp?`<div class="fig">${circ(Q.sp)}</div>`:''}${Q.h}${Q.lab!==undefined?labHTML():''}${k==n-1?SRC:''}</div><div class="dots">${pg.map((_,j)=>`<i class="${j==k?'on':''}" onclick="lesson(${i},${j})"></i>`).join('')}</div><div class="r2"><button ${k?'':'disabled'} onclick="lesson(${i},${k-1})">› قبلی</button>${k<n-1?`<button class="p" onclick="lesson(${i},${k+1})">بعدی ‹</button>`:`<button class="p" onclick="levels(${i})">برو به بازی 🎮</button>`}</div>`;if(Q.lab!==undefined)labu()}
+app.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+app.addEventListener('touchend',e=>{if(!LS)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)<60)return;const k=LS.k+(d>0?1:-1);if(k>=0&&k<LS.n)lesson(LS.i,k)},{passive:true});
+function levels(t){LS=null;let h=`<div class="card"><h2>${T[t].i} ${T[t].n}</h2><p class="mut">همهٔ خانه‌ها قفس دارند. بعضی قفس‌ها را باید با مدار (⚡) حل کنی و مجموع بقیه از قبل معلوم است. در سطح «بسیار سخت» هیچ عددی از قبل در جدول نیست.</p></div>`;
+[0,1,2,3].forEach(l=>{const un=l==0||t==7||P[t+'-'+(l-1)]!==undefined;h+=`<div class="card r2"><div><b>سطح ${LV[l]}</b> ${un?'':'🔒'}<div class="st">${stars(t+'-'+l)}</div></div><button class="p" ${un?'':'disabled'} onclick="start(${t},${l})">شروع</button></div>`});
+app.innerHTML=h+'<button onclick="home()">بازگشت</button>'}
+
+let Z,tmr,SPD=1,AC,MUTE=false,PR,LB={m:0,V:12,a:3,b:6,r:1};try{MUTE=localStorage.getItem('dks')=='1'}catch(e){}
+const mm=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},f1=x=>+x.toFixed(2),bx=i=>((i/9|0)/3|0)*3+((i%9)/3|0);
+const ER='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>';
+/* ---- صدا ---- */
+function snd(t){if(MUTE)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const n=AC.currentTime,tone=(f,d,ty,v,st,f2)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.setValueAtTime(f,n+st);if(f2)o.frequency.exponentialRampToValueAtTime(f2,n+st+d);g.gain.setValueAtTime(v,n+st);g.gain.exponentialRampToValueAtTime(.001,n+st+d);o.connect(g);g.connect(AC.destination);o.start(n+st);o.stop(n+st+d+.02)};
+({tap:()=>tone(520,.06,'sine',.1,0),page:()=>tone(380,.07,'sine',.1,0,300),ok:()=>{tone(660,.12,'sine',.18,0);tone(990,.2,'sine',.18,.1)},bad:()=>tone(160,.3,'sawtooth',.1,0,90),boom:()=>tone(300,.35,'square',.09,.05,40),hint:()=>{tone(520,.15,'triangle',.15,0);tone(780,.2,'triangle',.15,.12)},win:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.18,i*.12))})[t]()}catch(e){}}
+function mute(){MUTE=!MUTE;try{localStorage.setItem('dks',MUTE?'1':'0')}catch(e){}$('#sb').textContent=MUTE?'🔇':'🔊';toast(MUTE?'صدا خاموش':'صدا روشن');snd('tap')}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button,.dots i'))snd('tap')});
+function toast(t){let e=$('#ts');if(!e){e=document.createElement('div');e.id='ts';e.style.cssText='position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:6px 14px;border-radius:20px;z-index:20;font-size:13px;transition:.3s';document.body.appendChild(e)}e.textContent=t;e.style.opacity=1;clearTimeout(e.t);e.t=setTimeout(()=>e.style.opacity=0,1500)}
+
+/* ---- خانه، راهنما، آزمایشگاه ---- */
+function rs0(){let h='';try{if(localStorage.getItem('dkz'))h+='<div class="card r2"><b>▶️ بازی نیمه‌تمام داری</b><button class="p" onclick="cont()">ادامه</button></div>'}catch(e){}return h+'<div class="card"><div class="r2"><button onclick="formulas()">📑 برگهٔ فرمول‌ها</button><button onclick="labx()">🔬 آزمایشگاه</button></div><div class="r2" style="margin-top:6px"><button onclick="settings()">⚙️ تنظیمات و راهنما</button><button onclick="ob(0)">❓ آموزش سریع</button></div></div>'}
+const OB=[['⚡','قفس‌های ⚡دار','هر ناحیهٔ خط‌چین یک «قفس» است و مجموع اعدادش روی آن نوشته می‌شود. روی ⚡ بزن و مدار را حل کن تا مجموع آن قفس را بفهمی؛ مجموع بقیهٔ قفس‌ها از قبل معلوم است. بعضی ⚡ها «طراحی مدار» هستند: با ابزارهای جعبه مدار می‌سازی.'],['★','سه ستاره','زمان، مدارها و قلب‌ها. روی هر ستاره بزن تا شرطش را بخوانی.'],['❤️','پنج قلب و قوانین','هر عدد غلط در جدول یا پاسخ غلط مدار یک قلب کم می‌کند. هر ردیف، ستون و مربع ۳×۳ باید ۱ تا ۹ را یک‌بار داشته باشد و عددهای هر قفس تکراری نیستند.']];
+function ob(k){k=k||0;const o=OB[k];$('#mc').innerHTML=`<div style="text-align:center"><div style="font-size:48px">${o[0]}</div><h3>${o[1]}</h3><p>${o[2]}</p></div><div class="dots">${OB.map((_,j)=>`<i class="${j==k?'on':''}"></i>`).join('')}</div><div class="r2" style="margin-top:8px">${k<OB.length-1?`<button class="p" onclick="ob(${k+1})">بعدی</button>`:`<button class="p" onclick="cl()">شروع!</button>`}<button onclick="cl()">بستن</button></div>`;$('#ov').classList.add('on')}
+function cl(){$('#ov').classList.remove('on');try{localStorage.setItem('dkoh','1')}catch(e){}}
+const FS=[['قانون اهم','V = I × R'],['حلقهٔ ساده','V = V₁ + V₂ + … ، جریان همه‌جا یکسان'],['قاعدهٔ انشعاب','ΣI ورودی = ΣI خروجی'],['مقاومت متوالی','R<sub>eq</sub> = R₁ + R₂ + …'],['مقاومت موازی','1/R<sub>eq</sub> = 1/R₁ + 1/R₂ + …  ؛ دو مقاومت: R₁R₂ ÷ (R₁+R₂)'],['برابری ولتاژ موازی','V = I₁R₁ = I₂R₂ = …'],['جریان کل موازی','I = I₁ + I₂ + …'],['باتری واقعی','I = ε ÷ (R + r) ، V<sub>پایانه</sub> = ε − I·r'],['اتصال کوتاه','I = ε ÷ r'],['آمپرسنج و ولت‌سنج','آمپرسنج: متوالی (R ≈ 0) ؛ ولت‌سنج: موازی (R ≈ ∞)']];
+function formulas(){LS=null;app.innerHTML=`<div class="card"><h2>📑 برگهٔ فرمول‌ها</h2>${FS.map(([t,f])=>`<h3>${t}</h3><div class="fm">${f}</div>`).join('')}${SRC}</div><button onclick="home()">بازگشت</button>`}
+const HELP=[['📖 آموزش','هر مبحث چند صفحه دارد؛ با دکمه‌ها، نقطه‌ها یا کشیدن انگشت صفحه را عوض کن. در صفحه‌های «خودت امتحان کن» با اسلایدر مدار را تغییر بده.'],['🎮 بازی','جدول کیلر سودوکو را حل کن. قفس‌های ⚡دار را با مدار باز کن؛ مجموع بقیهٔ قفس‌ها از قبل نوشته شده است.'],['🛠 طراحی مدار','روی صفحهٔ نقطه‌ای ابزار را انتخاب کن و روی یک ضلع بزن تا قرار بگیرد. باتری جهت دارد (با ↺ برگردان). هدف را با آمپرسنج یا ولت‌سنجی که خودت می‌گذاری برآورده کن و «ثبت طرح» را بزن. بدون باتری جریانی نیست و سیم موازی با مقاومت آن را اتصال کوتاه می‌کند.'],['★ ستاره‌ها و ❤️ قلب‌ها','سه ستاره: زمان، مدارها و قلب‌ها. روی هر ستاره بزن تا شرطش را بخوانی. پنج قلب داری و هر خطا یکی را می‌گیرد.'],['✏️ ابزارهای جدول','✏️ نوشتن عدد، 📝 یادداشت کاندیدا، پاک‌کن برای حذف و ↶ برای برگشت. ⏸ زمان را متوقف می‌کند.'],['🔬 آزمایشگاه','همان ویرایشگر آزاد است: هر مداری بساز و جریان‌ها را با الکترون‌های متحرک ببین. سه مثال آماده هم دارد.'],['📶 حالت آفلاین','همهٔ بخش‌ها بدون اینترنت کار می‌کنند؛ فقط فونت وزیرمتن از اینترنت می‌آید و در حالت آفلاین فونت پیش‌فرض دستگاه نمایش داده می‌شود.']];
+function setT(i){ti=(i+6)%7;theme();settings()}
+function rst(){if(confirm('پیشرفت و بازی ذخیره‌شده پاک شود؟')){P={};save();try{localStorage.removeItem('dkz')}catch(e){}home()}}
+function settings(){LS=null;app.innerHTML=`<div class="card"><h2>⚙️ تنظیمات</h2><div class="r2"><span>صدا</span><button onclick="mute();settings()">${MUTE?'🔇 خاموش':'🔊 روشن'}</button></div><h3>تم</h3><div class="r2">${THM.map((t,i)=>`<button class="${ti==i?'p':''}" onclick="setT(${i})">${NM[i]}</button>`).join('')}</div><h3>داده‌ها</h3><button onclick="rst()">🗑 پاک کردن پیشرفت</button></div><div class="card"><h2>🧭 آموزش بخش‌های بازی</h2>${HELP.map(([a,b])=>`<details><summary>${a}</summary><p>${b}</p></details>`).join('')}</div><button onclick="home()">بازگشت</button>`}
+let RL;
+const labHTML=()=>`<div class="r2">${['متوالی','موازی','باتری واقعی'].map((n,j)=>`<button class="${LB.m==j?'p':''}" onclick="LB.m=${j};RL()">${n}</button>`).join('')}</div><div class="fig" id="lf"></div><div class="box" id="lx"></div>${['V','a','b','r'].filter(k=>(k!='r'||LB.m==2)&&(k!='b'||LB.m!=2)).map(k=>`<label>${{V:'ولتاژ V (ε)',a:LB.m==2?'مقاومت R':'مقاومت R₁',b:'مقاومت R₂',r:'مقاومت درونی r'}[k]} = <b id="lv${k}"></b><input type="range" min="${k=='r'?0:1}" max="${k=='V'?24:12}" value="${LB[k]}" oninput="LB['${k}']=+this.value;labu()"></label>`).join('')}`;
+function lab(){LS=null;RL=lab;app.innerHTML=`<div class="card"><h2>🔬 آزمایشگاه آزاد</h2><p class="mut">اسلایدرها را حرکت بده؛ هرچه جریان بیشتر باشد الکترون‌ها تندتر می‌روند.</p>${labHTML()}</div><button onclick="home()">بازگشت</button>`;labu()}
+function labu(){const{m,V,a,b,r}=LB;let sp,tx,I;if(m==0){I=V/(a+b);sp={V:V+'V',S:[a+'Ω',b+'Ω'],It:`I = ${f1(I)}A`};tx=`R کل = ${a+b}Ω ، I = ${f1(I)}A ، V₁ = ${f1(I*a)}V ، V₂ = ${f1(I*b)}V`}else if(m==1){const i1=V/a,i2=V/b;I=i1+i2;sp={V:V+'V',B:[[a+'Ω'],[b+'Ω']],il:[`I₁ = ${f1(i1)}A`,`I₂ = ${f1(i2)}A`],It:`I = ${f1(I)}A`};tx=`R معادل = ${f1(a*b/(a+b))}Ω ، I = ${f1(I)}A ، ولتاژ هر شاخه ${V}V`}else{I=V/(a+r);sp={V:V+'V',S:[a+'Ω'],r:`r=${r}Ω`,It:`I = ${f1(I)}A`};tx=`I = ${f1(I)}A ، افت درونی = ${f1(I*r)}V ، ولتاژ پایانه = ${f1(V-I*r)}V`}
+SPD=Math.min(3,Math.max(.4,I/3));$('#lf').innerHTML=circ(sp);$('#lx').textContent=tx;['V','a','b','r'].forEach(k=>{const e=$('#lv'+k);if(e)e.textContent=LB[k]})}
+
+/* ---- بازی ---- */
+const elap=()=>(Z.el+(Z.run?Date.now()-Z.ts:0))/1000;
+function tpause(){if(Z.run){Z.el+=Date.now()-Z.ts;Z.run=0}}
+function tresume(){if(!Z.run&&!Z.pz&&!Z.done){Z.ts=Date.now();Z.run=1}}
+function pz(){Z.pz=1;tpause();game()}function rz(){Z.pz=0;tresume();game()}
+function start(t,l){app.innerHTML='<div class="card">⏳ در حال ساخت جدول یکتا و مدارها…</div>';setTimeout(()=>{const p=gen(l),used=new Set(),nc=[6,8,10,12][l];
+sh(p.cages.filter(c=>c.cells.some(x=>!p.giv.has(x)))).slice(0,nc).forEach(c=>c.q=mkQ(c.sum,t,l,used));
+const qi=p.cages.map((c,i)=>c.q?i:-1).filter(i=>i>=0);
+Z={t,l,p,qi,g:Array.from({length:81},(_,i)=>p.giv.has(i)?p.sol[i]:0),nt:Array(81).fill(0),ans:p.cages.map(c=>c.q?null:c.sum),hn:p.cages.map(()=>0),cs:p.cages.map(()=>0),hearts:5,limit:[240,300,420,600][l]+45*qi.length,el:0};
+init();game()},30)}
+function init(){Object.assign(Z,{mode:'pen',sel:-1,cur:0,ev:{},pop:-1,done:0,pz:0,h:[],ts:Date.now(),run:1,co:Array(81).fill(-1)});Z.p.cages.forEach((c,i)=>c.cells.forEach(x=>Z.co[x]=i));clearInterval(tmr);tmr=setInterval(tick,1000)}
+function sv(){if(!Z||Z.done)return;try{localStorage.setItem('dkz',JSON.stringify({t:Z.t,l:Z.l,p:{sol:Z.p.sol,cages:Z.p.cages,giv:[...Z.p.giv]},qi:Z.qi,g:Z.g,nt:Z.nt,ans:Z.ans,hn:Z.hn,cs:Z.cs,hearts:Z.hearts,limit:Z.limit,el:Z.el+(Z.run?Date.now()-Z.ts:0)}))}catch(e){}}
+function cont(){let d;try{d=JSON.parse(localStorage.getItem('dkz'))}catch(e){}if(!d)return;d.p.giv=new Set(d.p.giv);Z=d;init();game()}
+function tick(){if(!Z||Z.done)return;const e=$('#tm');if(!e)return;const r=Z.limit-elap();e.textContent='⏱ '+mm(r);const f=$('#tf');if(f)f.style.width=Math.max(0,Math.min(100,r/Z.limit*100))+'%';e.parentElement.classList.toggle('red',r>0&&r<=30)}
+function hud(){const cs=Z.cs,r=Z.limit-elap(),w=cs.filter(x=>x==3).length,hh=cs.filter(x=>x==2).length,ic=['○','✓','💡','✗'],cl=['','ok','hint','bad'];
+const ok=[r>0,w<=1&&hh<=1,Z.hearts>0],ct=[`<div class="tbar ${r>0&&r<=30?'red':''}"><i id="tf" style="width:${Math.max(0,Math.min(100,r/Z.limit*100))}%"></i><b id="tm">⏱ ${mm(r)}</b></div><button class="sbtn" style="font-size:16px" onclick="pz()">⏸</button>`,
+Z.qi.map(i=>`<span class="tk ${cl[cs[i]]} ${Z.ev.tick===i?'jmp':''}">${ic[cs[i]]}</span>`).join(''),
+[0,1,2,3,4].map(j=>j<Z.hearts?'<span>❤️</span>':`<span class="${Z.ev.heart===j?'boom':''}">💔</span>`).join('')],
+pt=[`زمان مجاز: ${mm(Z.limit)}. اگر جدول را قبل از پایان زمان کامل کنی، این ستاره را می‌گیری. در ۳۰ ثانیهٔ آخر قرمز می‌شود. وقتی پنجرهٔ مدار باز است یا بازی را متوقف کنی، زمان نمی‌گذرد.`,'همهٔ مدارها را حل کن. یک پاسخ غلط و یک راهنمایی اشکالی ندارد؛ از دومی به بعد ستاره از دست می‌رود. ✓ درست، ✗ غلط، 💡 راهنما.','جدول را با دست‌کم یک قلب باقی‌مانده تمام کن. خطای عدد جدول یا پاسخ مدار یک قلب کم می‌کند.'];
+return '<div class="card hud">'+[0,1,2].map(k=>`<div class="hr"><button class="sbtn ${ok[k]?'':'lost'}" onclick="pp(${k})">${ok[k]?'★':'☆'}</button><div class="hc">${ct[k]}</div>${Z.pop==k?`<div class="pop">${pt[k]}</div>`:''}</div>`).join('')+'</div>'}
+function pp(k){Z.pop=Z.pop==k?-1:k;game()}
+function game(){if(Z.pz){app.innerHTML='<div class="card" style="text-align:center"><h2>⏸ بازی متوقف است</h2><p class="mut">زمان نمی‌گذرد و جدول پنهان شده است.</p><button class="p" onclick="rz()">ادامه</button></div>';return}
+const{p,g,co}=Z,d=Z.sel>=0?g[Z.sel]:0,cnt=n=>g.filter((v,i)=>v==n&&v===p.sol[i]).length;let b='';
+for(let i=0;i<81;i++){const r=i/9|0,q=i%9,k=co[i],c=p.cages[k],gv=p.giv.has(i),h=(a,e)=>a>=0&&e>=0&&a<9&&e<9&&co[a*9+e]==k,er=!gv&&g[i]&&g[i]!==p.sol[i];
+const st=(q%3==2&&q<8?'border-right-width:3px;':'')+(r%3==2&&r<8?'border-bottom-width:3px;':'');
+let in_=`<div class="cage" style="border-top-width:${h(r-1,q)?0:2}px;border-bottom-width:${h(r+1,q)?0:2}px;border-left-width:${h(r,q-1)?0:2}px;border-right-width:${h(r,q+1)?0:2}px"></div>`;
+if(c.cells[0]==i)in_+=c.q?`<span class="lbl ${Z.ans[k]===null?'z':''}" onclick="event.stopPropagation();openQ(${k})">${Z.ans[k]===null?'⚡':Z.ans[k]}</span>`:`<span class="lbl f">${c.sum}</span>`;
+if(!g[i]&&Z.nt[i])in_+='<div class="nt">'+[1,2,3,4,5,6,7,8,9].map(n=>`<i>${Z.nt[i]&(1<<n)?n:''}</i>`).join('')+'</div>';
+b+=`<div class="cell ${gv?'g':'b'} ${d&&g[i]==d?'hl':''} ${i==Z.sel?'sel':''} ${er?'err':''}" style="${st}" onclick="sel(${i})">${g[i]||''}${in_}</div>`}
+const dg9=[1,2,3,4,5,6,7,8,9].map(n=>`<button ${cnt(n)>=9?'disabled':''} onclick="dg(${n})">${n}</button>`).join(''),M=Z.mode,
+tl=`<div class="tools"><button class="${M=='pen'?'on':''}" onclick="Z.mode='pen';game()">✏️</button><button class="${M=='nt'?'on':''}" onclick="Z.mode='nt';game()">📝</button><button class="${M=='er'?'on':''}" onclick="Z.mode='er';game()">${ER}</button><button onclick="undo()">↶</button></div>`;
+app.innerHTML=`<div class="r2"><b>${T[Z.t].i} ${LV[Z.l]}</b><button onclick="leave()">خروج</button></div>${hud()}<div class="board">${b}</div><div class="pad">${dg9}</div>${tl}<div class="box">قفس‌های ⚡دار را با مدار حل کن؛ مجموع بقیه نوشته شده است. ✏️ نوشتن، 📝 یادداشت کاندیدا، پاک‌کن، ↶ برگشت.</div><button onclick="start(Z.t,Z.l)">شروع دوباره</button>`;Z.ev={};sv()}
+function leave(){sv();Z.done=1;levels(Z.t)}
+function snap(){Z.h.push(JSON.stringify([Z.g,Z.nt]));if(Z.h.length>60)Z.h.shift()}
+function undo(){if(Z.done||!Z.h.length)return;[Z.g,Z.nt]=JSON.parse(Z.h.pop());game()}
+function sel(i){if(Z.done)return;Z.sel=i;if(Z.mode=='er'&&!Z.p.giv.has(i)){snap();Z.g[i]=0;Z.nt[i]=0}game()}
+function lose(){if(Z.hearts>0){Z.hearts--;Z.ev.heart=Z.hearts;snd('boom')}}
+function dg(n){if(Z.mode=='er')Z.mode='pen';put(n)}
+function put(v){if(Z.done||Z.sel<0||Z.p.giv.has(Z.sel))return;const i=Z.sel,p=Z.p;
+if(Z.mode=='nt'&&v){if(Z.g[i])return;snap();Z.nt[i]^=1<<v;return game()}
+snap();if(v&&v!==p.sol[i]){lose();snd('bad')}Z.g[i]=v;Z.nt[i]=0;
+if(v)for(let j=0;j<81;j++)if(j!=i&&((j/9|0)==(i/9|0)||j%9==i%9||bx(j)==bx(i)))Z.nt[j]&=~(1<<v);
+if(Z.g.every((x,k)=>x===p.sol[k]))return fin();game()}
+document.addEventListener('keydown',e=>{if(!Z||Z.done||Z.pz||$('#ov').classList.contains('on')||!$('.board'))return;if(e.key>='1'&&e.key<='9')dg(+e.key);if(e.key=='Backspace'||e.key=='Delete')put(0)});
+function openQ(i){if(Z.p.cages[i].q.d)return openD(i);tpause();Z.cur=i;const c=Z.p.cages[i],q=c.q;
+$('#mc').innerHTML=`<h3>⚡ قفس ${i+1} (${c.cells.length} خانه)</h3>${circ(q.sp)}<div class="mut" id="rdo">روی مقاومت‌ها بزن. (زمان متوقف است)</div><p><b>${q.q}</b></p><input id="ai" type="number" inputmode="numeric" placeholder="پاسخ" value="${Z.ans[i]??''}"><div id="fb" class="box" style="display:none"></div><div class="box" id="hb" style="display:none"></div><div class="r2" style="margin-top:8px"><button class="p" onclick="sub()">ثبت پاسخ</button><button onclick="hint()">💡 راهنما</button><button onclick="sol()">📘 راه‌حل</button><button onclick="cls()">بستن</button></div>`;
+document.querySelectorAll('#mc .rz').forEach(e=>e.onclick=()=>rd(e));if(Z.hn[i])hint(1);$('#ov').classList.add('on')}
+function hint(r){const i=Z.cur,q=Z.p.cages[i].q;if(!r&&Z.hn[i]<2){Z.hn[i]++;snd('hint');if(Z.hn[i]==1&&Z.cs[i]==0){Z.cs[i]=2;Z.ev.tick=i;game()}}const n=Z.hn[i];if(!n)return;const h=$('#hb');h.style.display='block';h.innerHTML='💡 '+TIP[q.tp]+(n>1?`<div class="fm">${q.f}</div>`:'<br><span class="mut">یک بار دیگر بزن تا فرمول را ببینی.</span>')}
+function sol(){const i=Z.cur,c=Z.p.cages[i];Z.ans[i]=c.sum;Z.cs[i]=3;Z.ev.tick=i;game();const h=$('#hb');h.style.display='block';h.innerHTML=`📘 <b>راه‌حل:</b> ${c.q.s}`;{const a=$('#ai');if(a)a.value=c.sum}if(c.q.d)edLoadRef(c.q.d.ref)}
+function sub(){const v=parseInt($('#ai').value);if(isNaN(v))return;const i=Z.cur,c=Z.p.cages[i];Z.ans[i]=v;Z.ev.tick=i;
+if(v===c.sum){if(Z.cs[i]==0)Z.cs[i]=1;snd('ok');cls();return}
+Z.cs[i]=3;lose();snd('bad');game();const f=$('#fb');f.style.display='block';f.textContent='❌ پاسخ درست نیست و یک قلب کم شد. می‌توانی آن را اصلاح کنی یا همین‌طور ثبت بماند.'}
+function cls(){$('#ov').classList.remove('on');tresume();game()}
+function fin(){Z.done=1;clearInterval(tmr);try{localStorage.removeItem('dkz')}catch(e){}const cs=Z.cs,p=Z.p,el=elap(),
+a=[el<=Z.limit,p.cages.every((c,i)=>!c.q||Z.ans[i]===c.sum)&&cs.filter(x=>x==3).length<=1&&cs.filter(x=>x==2).length<=1,Z.hearts>0],s=a.filter(Boolean).length,k=Z.t+'-'+Z.l;P[k]=Math.max(P[k]||0,s);save();snd('win');
+const bad=Z.qi.filter(i=>cs[i]>=2),rv=bad.length?`<div class="card"><h3>📋 مرور مدارها</h3>${bad.map(i=>{const q=p.cages[i].q;return`<details><summary>${cs[i]==3?'❌':'💡'} ${q.q}</summary><p class="mut">پاسخ درست: ${p.cages[i].sum}</p><div class="box">${q.s}</div><button onclick="prac(${i})">🔁 همین مدار را دوباره بساز</button></details>`}).join('')}</div>`:'';
+app.innerHTML=`<div class="card" style="text-align:center"><h2>🎉 جدول کامل شد!</h2><div class="st" style="font-size:30px">${'★'.repeat(s)+'☆'.repeat(3-s)}</div>${a.map((x,i)=>`<div>${x?'✅':'❌'} ستارهٔ ${['زمان','مدارها','قلب‌ها'][i]}</div>`).join('')}<p class="mut">زمان تو: ${mm(el)}</p><div class="r2"><button class="p" onclick="start(${Z.t},${Z.l})">جدول تازه</button><button onclick="levels(${Z.t})">سطح‌ها</button></div></div>${rv}`}
+function nq(){let q;for(let k=0;k<15;k++){q=mkQ(PR.c.sum,Z.t,Z.l,new Set());if(!q.d)break}PR.q=q}
+function prac(i){PR={c:Z.p.cages[i]};nq();pr()}
+function pr(){const q=PR.q;$('#mc').innerHTML=`<h3>🔁 تمرین</h3>${circ(q.sp)}<p><b>${q.q}</b></p><input id="pa" type="number" inputmode="numeric" placeholder="پاسخ"><div class="box" id="pf" style="display:none"></div><div class="r2" style="margin-top:8px"><button class="p" onclick="prc()">بررسی</button><button onclick="nq();pr()">سؤال تازه</button><button onclick="cl()">بستن</button></div>`;$('#ov').classList.add('on')}
+function prc(){const v=parseInt($('#pa').value);if(isNaN(v))return;const ok=v===PR.c.sum,f=$('#pf');f.style.display='block';f.innerHTML=ok?'✅ درست!':'❌ هنوز نه. راه‌حل: '+PR.q.s;snd(ok?'ok':'bad')}
+
+/* ===== editor.js: ویرایشگر آزاد مدار روی شبکهٔ نقطه‌ای + انیمیشن الکترون ===== */
+const EW=7,EH=5,ES=50,EM=20,nd=(c,r)=>r*EW+c,px=n=>[EM+(n%EW)*ES,EM+((n/EW)|0)*ES],f2=x=>String(+x.toFixed(2));
+const EE=(t,c1,r1,c2,r2,v,r)=>({t,a:nd(c1,r1),b:nd(c2,r2),v:v||0,r:r||0});
+const RUN=(c1,r1,c2,r2)=>{const o=[],dc=Math.sign(c2-c1),dr=Math.sign(r2-r1);let c=c1,r=r1;while(c!=c2||r!=r2){o.push(EE('w',c,r,c+dc,r+dr));c+=dc;r+=dr}return o};
+const EDG=[];for(let r=0;r<EH;r++)for(let c=0;c<EW;c++){if(c<EW-1)EDG.push([nd(c,r),nd(c+1,r)]);if(r<EH-1)EDG.push([nd(c,r),nd(c,r+1)])}
+const segD=(p,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],t=Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/(dx*dx+dy*dy)));return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy)};
+const EV={b:[1,2,3,4,6,9,12],r:[1,2,3,4,6,8,12]},ENM={b:'🔋',r:'Ω',a:'A',v:'V',w:'〰',f:'↺',x:'🗑'};
+let E=null;const Anim={cv:null,raf:0,t:0,n:0,col:'#f80'};
+function animStart(cv){Anim.cv=cv;Anim.t=0;if(!Anim.raf)Anim.raf=requestAnimationFrame(animLoop)}
+function animLoop(now){Anim.raf=0;const cv=Anim.cv;if(!cv||!cv.isConnected||cv.offsetParent===null||!E)return;
+const dt=Math.min(.05,Anim.t?(now-Anim.t)/1000:0);Anim.t=now;if(Anim.n++%40==0)Anim.col=getComputedStyle(document.documentElement).getPropertyValue('--o').trim()||Anim.col;
+const g=cv.getContext('2d');g.setTransform(cv.width/340,0,0,cv.height/240,0,0);g.clearRect(0,0,340,240);g.fillStyle=Anim.col;
+for(const f of E.flows){const dx=f.x2-f.x1,dy=f.y2-f.y1,L=Math.hypot(dx,dy),sp=14,v=22+Math.min(Math.abs(f.i),12)*9;let ph=((E.ph[f.k]||0)+Math.sign(f.i)*v*dt)%sp;E.ph[f.k]=ph;if(ph<0)ph+=sp;for(let s=ph;s<L;s+=sp){g.beginPath();g.arc(f.x1+dx*s/L,f.y1+dy*s/L,3,0,6.283);g.fill()}}
+Anim.raf=requestAnimationFrame(animLoop)}
+function edMount(sel,o){E={pal:o.pal||null,els:(o.pre||[]).map(e=>({...e,lock:1})),tool:'r',val:3,br:0,h:[],ph:{},flows:[],goal:o.goal||null,free:!o.pal};
+if(E.pal){E.tool=E.pal[0].t;E.val=E.pal[0].v}
+$(sel).innerHTML='<div id="et"></div><div class="edw"><canvas id="ec" width="680" height="480"></canvas><svg id="es" viewBox="0 0 340 240"></svg></div><div class="box" id="eo"></div><div class="r2"><button onclick="edUndo()">↶ برگشت</button><button onclick="edClr()">پاک‌کردن</button></div>';
+$('#es').addEventListener('click',edTap);edTool();edRefresh();animStart($('#ec'))}
+const eUsed=(t,v)=>E.els.filter(e=>!e.lock&&e.t==t&&(t=='a'||t=='v'||e.v==v)).length;
+function edVals(){const t=E.tool;if(t=='a'||t=='v')return E.pal?E.pal.filter(p=>p.t==t).map(p=>({v:0,left:p.n-eUsed(t,0)})):[{v:0,left:9}];if(t=='b'||t=='r')return E.pal?E.pal.filter(p=>p.t==t).map(p=>({v:p.v,left:p.n-eUsed(t,p.v)})):EV[t].map(v=>({v,left:9}));return[]}
+function edTool(){const P=E.pal,ts=[...(P?[...new Set(P.map(p=>p.t))]:['b','r','a','v']),'w','f','x'],vs=edVals();
+$('#et').innerHTML='<div class="r2">'+ts.map(t=>`<button class="tl ${E.tool==t?'p':''}" onclick="edSel('${t}')">${ENM[t]}</button>`).join('')+'</div>'+(vs.length?'<div class="r2" style="margin-top:4px">'+vs.map(o=>`<button class="tl ${o.v==E.val?'p':''}" ${o.left>0?'':'disabled'} onclick="E.val=${o.v};edTool()">${E.tool=='b'?o.v+'V':E.tool=='r'?o.v+'Ω':'×'+Math.max(o.left,0)}${P&&o.v?' ×'+Math.max(o.left,0):''}</button>`).join('')+'</div>':'')+(E.free&&E.tool=='b'?'<div class="r2" style="margin-top:4px"><span class="mut">مقاومت درونی:</span>'+[0,1,2].map(r=>`<button class="tl ${E.br==r?'p':''}" onclick="E.br=${r};edTool()">${r}Ω</button>`).join('')+'</div>':'')}
+function edSel(t){E.tool=t;const v=edVals();if(v.length)E.val=(v.find(o=>o.v==E.val&&o.left>0)||v.find(o=>o.left>0)||v[0]).v;edTool()}
+const edSnap=()=>{E.h.push(JSON.stringify(E.els));if(E.h.length>80)E.h.shift()};
+function edUndo(){if(E.h.length){E.els=JSON.parse(E.h.pop());edRefresh();edTool()}}
+function edClr(){edSnap();E.els=E.els.filter(e=>e.lock);edRefresh();edTool()}
+function edTap(ev){const r=ev.currentTarget.getBoundingClientRect(),p=[(ev.clientX-r.left)*340/r.width,(ev.clientY-r.top)*240/r.height];let best=-1,bd=20;EDG.forEach(([a,b],i)=>{const d=segD(p,px(a),px(b));if(d<bd){bd=d;best=i}});if(best<0)return;
+const[a,b]=EDG[best],i=E.els.findIndex(e=>(e.a==a&&e.b==b)||(e.a==b&&e.b==a)),o=i>=0?E.els[i]:null,t=E.tool;if(o&&o.lock)return;
+if(t=='x'){if(o){edSnap();E.els.splice(i,1)}}
+else if(t=='f'){if(o&&o.t=='b'){edSnap();[o.a,o.b]=[o.b,o.a]}}
+else{if(t!='w'&&E.pal){const it=edVals().find(x=>x.v==E.val),same=o&&o.t==t&&(t=='a'||t=='v'||o.v==E.val);if(!it||(it.left<=0&&!same))return}
+if(o&&o.t=='b'&&t=='b'&&o.v==E.val){edSnap();[o.a,o.b]=[o.b,o.a]}
+else{edSnap();const el={t,a,b,v:(t=='w'||t=='a'||t=='v')?0:E.val,r:t=='b'?E.br:0};if(i>=0)E.els[i]=el;else E.els.push(el)}}
+edRefresh();edTool()}
+function edLoad(els){edSnap();E.els=[...E.els.filter(e=>e.lock),...els.map(e=>({...e}))];edRefresh();edTool()}
+const edLoadRef=ref=>{if(E)edLoad(ref)};
+function edRefresh(){const s=solveNet(EW*EH,E.els);E.sol=s;let h='';
+for(let r=0;r<EH;r++)for(let c=0;c<EW;c++)h+=`<circle cx="${EM+c*ES}" cy="${EM+r*ES}" r="2.5" class="gd"/>`;
+const fl=[];E.els.forEach((e,k)=>{const A=px(e.a),B=px(e.b),i=s.I[k],mx=(A[0]+B[0])/2,my=(A[1]+B[1])/2,hz=A[1]==B[1],ang=Math.atan2(B[1]-A[1],B[0]-A[0])*180/Math.PI,g=`<g transform="translate(${mx} ${my}) rotate(${ang})">`;let lb='',l2='';
+h+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" class="w"/>`;
+if(e.t=='r'){h+=g+'<rect class="rz" x="-14" y="-6" width="28" height="12" rx="2"/></g>';lb=e.v+'Ω';l2=f2(Math.abs(i))+'A'}
+else if(e.t=='b'){h+=g+'<rect x="-7" y="-11" width="14" height="22" fill="var(--card)"/><line x1="-4" y1="-11" x2="-4" y2="11" class="bt"/><line x1="4" y1="-5" x2="4" y2="5" class="bt"/></g>';const ux=(A[0]-B[0])/ES,uy=(A[1]-B[1])/ES;h+=`<text class="t tt" x="${mx+ux*17-3}" y="${my+uy*17+4}" style="fill:var(--o);font-weight:700">+</text>`;lb=e.v+'V'+(e.r?' r='+e.r:'');l2=f2(Math.abs(i))+'A'}
+else if(e.t=='a'||e.t=='v'){h+=`<circle cx="${mx}" cy="${my}" r="11" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/><text class="t" x="${mx}" y="${my+4}" text-anchor="middle" style="font-weight:700">${e.t=='a'?'A':'V'}</text>`;lb=e.t=='a'?f2(Math.abs(i))+'A':f2(Math.abs(s.V[e.a]-s.V[e.b]))+'V'}
+if(lb){const rt=mx<250,x=hz?mx:(rt?mx+20:mx-20),y=hz?my-19:my-2,an=hz?'middle':(rt?'start':'end');h+=`<text class="t tt" x="${x}" y="${y}" text-anchor="${an}">${lb}</text>`;if(l2)h+=`<text class="t tt" x="${x}" y="${hz?my+29:y+14}" text-anchor="${an}" style="fill:var(--o);font-size:11px">${l2}</text>`}
+if(Math.abs(i)>1e-6)fl.push(e.t=='b'?{x1:B[0],y1:B[1],x2:A[0],y2:A[1],i,k}:{x1:A[0],y1:A[1],x2:B[0],y2:B[1],i,k})});
+$('#es').innerHTML=h;E.flows=fl;edRead()}
+function edMeas(){const g=E.goal,s=E.sol;if(!g)return null;const m=E.els.map((e,k)=>[e,k]).filter(o=>o[0].t==(g.k=='A'?'a':'v'));return m.length?m.map(([e,k])=>g.k=='A'?Math.abs(s.I[k]):Math.abs(s.V[e.a]-s.V[e.b])):null}
+const edOk=()=>{const m=edMeas();return !!m&&!E.sol.short&&m.some(x=>x>0&&Math.abs(x-E.goal.t)<1e-3)};
+function edRead(){const s=E.sol,B=E.els.map((e,k)=>[e,k]).filter(o=>o[0].t=='b');let h='';
+if(!B.length)h='🔌 باتری در مدار نیست، پس جریانی نمی‌گذرد و الکترونی حرکت نمی‌کند.';
+else if(s.short)h='⚠️ اتصال کوتاه! باتری از مسیر بدون مقاومت وصل شده است؛ جریان بسیار زیاد می‌شود و مقاومت‌های موازی با سیم جریانی نمی‌گیرند.';
+else if(B.every(o=>s.I[o[1]]==0))h='⭕ حلقهٔ بسته‌ای برای باتری وجود ندارد (مدار باز است)، پس جریانی نیست.';
+else h=B.map(o=>`🔋 ${o[0].v}V: جریان ${f2(Math.abs(s.I[o[1]]))}A`).join(' ، ');
+if(E.goal){const m=edMeas(),G=E.goal,nm=G.k=='A'?'آمپرسنج':'ولت‌سنج';h+=`<br>🎯 هدف: ${nm} = ${f2(G.t)}${G.k=='A'?'A':'V'} ${m?'← اکنون: '+m.map(f2).join(' ، '):'(هنوز '+nm+' نگذاشته‌ای)'}`}
+$('#eo').innerHTML=h}
+/* ----- آزمایشگاه آزاد ----- */
+const PRE={
+ser:()=>[EE('b',0,1,0,2,12),...RUN(0,1,1,1),EE('r',1,1,2,1,3),EE('r',2,1,3,1,6),...RUN(3,1,3,3),...RUN(3,3,0,3),...RUN(0,3,0,2)],
+par:()=>[EE('b',0,1,0,2,12),...RUN(0,1,2,1),EE('r',1,1,1,2,3),...RUN(1,2,1,3),EE('r',2,1,2,2,6),...RUN(2,2,2,3),...RUN(2,3,0,3),...RUN(0,3,0,2)],
+short:()=>[...PRE.par(),...RUN(2,1,3,1),...RUN(3,1,3,3),...RUN(3,3,2,3)]};
+function edPre(k){edLoad(PRE[k]())}
+function labx(){LS=null;app.innerHTML=`<div class="card"><h2>🔬 آزمایشگاه آزاد</h2><p class="mut">ابزار را انتخاب کن و روی یکی از ضلع‌های شبکه بزن. باتری جهت دارد (با ↺ یا زدن دوباره روی آن برگردان). بدون باتری الکترونی حرکت نمی‌کند و سیم موازی با مقاومت، آن را اتصال کوتاه می‌کند.</p><div id="ed"></div></div><div class="card"><b>مثال‌ها:</b><div class="r2" style="margin-top:6px"><button onclick="edPre('ser')">متوالی</button><button onclick="edPre('par')">موازی</button><button onclick="edPre('short')">اتصال کوتاه</button></div></div><button onclick="home()">بازگشت</button>`;edMount('#ed',{});edPre('ser')}
+
+/* ===== design.js: سؤال‌های طراحی مدار (هدف با آمپرسنج/ولت‌سنج، بررسی با solver) ===== */
+const pc=m=>{let c=0;while(m){c+=m&1;m>>=1}return c};
+function spSet(v){const n=v.length,S=Array.from({length:1<<n},()=>new Set());for(let m=1;m<1<<n;m++){const b=[];for(let i=0;i<n;i++)if(m>>i&1)b.push(i);if(b.length==1){S[m].add(v[b[0]]);continue}for(let a=(m-1)&m;a>0;a=(a-1)&m){const c=m^a;if(a<c)continue;for(const x of S[a])for(const y of S[c]){S[m].add(+(x+y).toFixed(6));S[m].add(+(x*y/(x+y)).toFixed(6))}}}return S}
+function mkD(kind,lv,dep){dep=dep||0;const RS=lv>1?[1,2,3,4,6,8,12]:[2,3,4,6,12],Vs=lv>1?[9,12,18,24]:[6,12,18],A=kind!='spV'&&kind!='vm';
+for(let tr=0;tr<500;tr++){const V=pick(Vs),r=kind=='ri'?pick([1,2]):0,a=pick(RS),b=pick(RS),c=pick(RS),hd=[EE('w',0,1,0,1)].slice(1);let rs,t,ref,txt,f,s;
+const lp=[...RUN(4,3,0,3),...RUN(0,3,0,2)],go=A?`آمپرسنج دقیقاً ${'#'} آمپر را نشان بدهد`:`ولت‌سنج دقیقاً ${'#'} ولت را نشان بدهد`;
+if(kind=='ser'||kind=='ri'){rs=[a,b];t=V/(r+a+b);ref=[...RUN(0,1,1,1),EE('r',1,1,2,1,a),EE('a',2,1,3,1),EE('r',3,1,4,1,b),...RUN(4,1,4,3),...lp];
+txt=`باتری ${V} ولتی${r?' با مقاومت درونی '+r+' اهم':''} روی صفحه است. با مقاومت‌های جعبه حلقه‌ای بساز که ${go}.`;f='I = ε ÷ (R کل + r) ؛ مقاومت‌های متوالی جمع می‌شوند';s=`دو مقاومت ${a}Ω و ${b}Ω را متوالی ببند: R کل = ${a+b}${r?' و r = '+r:''} ← I = ${V} ÷ ${a+b+r} = ${f2(t)}A`}
+else if(kind=='par'){rs=[a,b];t=V/a+V/b;ref=[...RUN(0,1,1,1),EE('a',1,1,2,1),...RUN(2,1,3,1),EE('r',2,1,2,2,a),...RUN(2,2,2,3),EE('r',3,1,3,2,b),...RUN(3,2,3,3),...RUN(3,3,0,3),...RUN(0,3,0,2)];
+txt=`باتری ${V} ولتی روی صفحه است. مقاومت‌ها را طوری ببند و آمپرسنج را جایی بگذار که جریان کل بسازد: ${go}.`;f='هر شاخه I = V ÷ R ؛ جریان کل جمع جریان شاخه‌هاست';s=`دو مقاومت ${a}Ω و ${b}Ω موازی: ${V}÷${a} + ${V}÷${b} = ${f2(t)}A`}
+else if(kind=='sp'){rs=[a,b,c];const Rp=b*c/(b+c);t=V/(a+Rp);ref=[...RUN(0,1,1,1),EE('a',1,1,2,1),EE('r',2,1,3,1,a),...RUN(3,1,4,1),EE('r',3,1,3,2,b),...RUN(3,2,3,3),EE('r',4,1,4,2,c),...RUN(4,2,4,3),...lp];
+txt=`باتری ${V} ولتی روی صفحه است. با مقاومت‌های جعبه مداری بساز که ${go} (آمپرسنج جریان کل را بخواند).`;f='موازی را به یک مقاومت تبدیل کن، با متوالی جمع کن، سپس I = V ÷ R کل';s=`${a}Ω متوالی با موازی ${b}Ω و ${c}Ω (=${f2(Rp)}Ω): R کل = ${f2(a+Rp)} ← I = ${f2(t)}A`}
+else if(kind=='multi'){rs=[a,b,c];t=V*(1/a+1/b+1/c);ref=[...RUN(0,1,1,1),EE('a',1,1,2,1),...RUN(2,1,4,1),EE('r',2,1,2,2,a),...RUN(2,2,2,3),EE('r',3,1,3,2,b),...RUN(3,2,3,3),EE('r',4,1,4,2,c),...RUN(4,2,4,3),...lp];
+txt=`باتری ${V} ولتی روی صفحه است. هر سه مقاومت را به‌صورت شاخه‌های جداگانه به باتری وصل کن و آمپرسنج را جایی بگذار که جریان کل را بخواند: ${go}.`;f='ولتاژ شاخه‌ها یکسان است؛ جریان کل = I₁ + I₂ + I₃';s=`${V}÷${a} + ${V}÷${b} + ${V}÷${c} = ${f2(t)}A`}
+else if(kind=='spV'){rs=[a,b,c];const Rp=b*c/(b+c);t=V*Rp/(a+Rp);ref=[...RUN(0,1,1,1),EE('r',1,1,2,1,a),...RUN(2,1,5,1),EE('r',3,1,3,2,b),...RUN(3,2,3,3),EE('r',4,1,4,2,c),...RUN(4,2,4,3),EE('v',5,1,5,2),...RUN(5,2,5,3),...RUN(5,3,0,3),...RUN(0,3,0,2)];
+txt=`باتری ${V} ولتی روی صفحه است. مقاومت‌ها را به‌دلخواه ببند و ولت‌سنج را موازی با بخش موازی بگذار تا ${go}.`;f='ولتاژ شاخه‌های موازی یکسان است: V موازی = V − I × R متوالی';s=`${a}Ω متوالی با موازی ${b}Ω و ${c}Ω (=${f2(Rp)}Ω)؛ V موازی = ${V}×${f2(Rp)}÷${f2(a+Rp)} = ${f2(t)}V`}
+else if(kind=='lad'){const x=pick(RS);rs=[a,b,c,x];const Rp=b*(c+x)/(b+c+x);t=V/(a+Rp);ref=[...RUN(0,1,1,1),EE('a',1,1,2,1),EE('r',2,1,3,1,a),EE('w',3,1,4,1),EE('r',3,1,3,2,b),...RUN(3,2,3,3),EE('r',4,1,4,2,c),EE('r',4,2,4,3,x),...RUN(4,3,0,3),...RUN(0,3,0,2)];
+txt=`باتری ${V} ولتی روی صفحه است. چهار مقاومت جعبه را طوری ببند که ${go} (آمپرسنج جریان کل را بخواند).`;f='ابتدا شاخهٔ دومقاومتی را جمع کن، آن را با مقاومت دیگر موازی کن، سپس با متوالی جمع کن';s=`${c}Ω و ${x}Ω متوالی (=${c+x}Ω) موازی با ${b}Ω (=${f2(Rp)}Ω) و متوالی با ${a}Ω: I = ${V} ÷ ${f2(a+Rp)} = ${f2(t)}A`}
+else{rs=[a,b];t=V*b/(a+b);ref=[...RUN(0,1,1,1),EE('r',1,1,2,1,a),EE('r',2,1,3,1,b),EE('v',2,1,2,2),EE('w',2,2,3,2),EE('w',3,2,3,1),...RUN(3,1,4,1),...RUN(4,1,4,3),...lp];
+txt=`باتری ${V} ولتی روی صفحه است. دو مقاومت را متوالی ببند و ولت‌سنج را طوری بگذار که ${go}. (ولت‌سنج باید موازی با قطعه‌ای باشد که می‌خواهی اندازه بگیری.)`;f='ولت‌سنج موازی بسته می‌شود و جریان نمی‌گیرد: V₂ = I × R₂';s=`${a}Ω و ${b}Ω متوالی؛ ولت‌سنج موازی با ${b}Ω: V₂ = ${V}×${b}÷${a+b} = ${f2(t)}V`}
+if(!(t>=.5&&t<=12&&Math.abs(t*2-Math.round(t*2))<1e-9))continue;
+const cnt={};[...rs,pick(RS),pick(RS)].forEach(x=>cnt[x]=(cnt[x]||0)+1);const vals=Object.keys(cnt).map(Number).sort((x,y)=>x-y),all=[];vals.forEach(v=>{for(let k=0;k<cnt[v];k++)all.push(v)});
+if(!A&&Math.abs(t-V)<1e-9)continue;
+const SS=spSet(all);let mn=99;
+if(A){for(let m=1;m<SS.length;m++)for(const R of SS[m])if(Math.abs(V/(r+R)-t)<1e-9)mn=Math.min(mn,pc(m))}
+else{for(let m1=1;m1<SS.length;m1++)for(let m2=1;m2<SS.length;m2++){if(m1&m2)continue;for(const R1 of SS[m1])for(const R2 of SS[m2])if(Math.abs(V*R1/(R1+R2)-t)<1e-9)mn=Math.min(mn,pc(m1|m2))}}
+if(mn<rs.length)continue
+const pal=[...vals.map(v=>({t:'r',v,n:cnt[v]})),{t:A?'a':'v',v:0,n:1}];
+return{txt:txt.replace('#',f2(t)),f,s,d:{k:A?'A':'V',t,pal,pre:[EE('b',0,1,0,2,V,r)],ref}}}
+return dep>2?mkD('ser',0,9):mkD(kind,lv>0?lv-1:0,dep+1)}
+function addD(tp,kind,lvs){G[tp].push((N,m)=>{const x=mkD(kind,m>6?2:m>4?1:0);return{sp:{V:'V'},q:x.txt,f:x.f,s:x.s,d:x.d}});lvs.forEach(l=>{POOL[tp][l].push(G[tp].length-1);DIDX[tp]=DIDX[tp]||{};(DIDX[tp][l]=DIDX[tp][l]||[]).push(G[tp].length-1)})}
+addD(0,'ser',[1,2]);addD(2,'par',[1,2]);addD(2,'sp',[2]);addD(3,'spV',[1,2]);addD(4,'multi',[1,2]);addD(4,'sp',[2]);addD(4,'lad',[2]);addD(5,'ri',[1,2]);addD(6,'vm',[1,2]);addD(6,'ser',[1]);
+function openD(i){tpause();Z.cur=i;const q=Z.p.cages[i].q;$('#mc').innerHTML=`<h3>🛠 طراحی مدار — قفس ${i+1}</h3><p><b>${q.q}</b></p><p class="mut">مثل آزمایشگاه آزاد است، ولی فقط با ابزارهای جعبه. آمپرسنج را در مسیر جریان و متوالی ببند و ولت‌سنج را موازی با قطعه.</p><div id="ed"></div><div id="fb" class="box" style="display:none"></div><div class="box" id="hb" style="display:none"></div><div class="r2" style="margin-top:8px"><button class="p" onclick="dsub()">ثبت طرح</button><button onclick="hint()">💡 راهنما</button><button onclick="sol()">📘 راه‌حل</button><button onclick="cls()">بستن</button></div>`;
+edMount('#ed',{pal:q.d.pal,pre:q.d.pre,goal:{k:q.d.k,t:q.d.t}});if(Z.hn[i])hint(1);$('#ov').classList.add('on')}
+function dsub(){const i=Z.cur,c=Z.p.cages[i];Z.ev.tick=i;
+if(edOk()){Z.ans[i]=c.sum;if(Z.cs[i]==0)Z.cs[i]=1;snd('ok');cls();return}
+Z.cs[i]=3;lose();snd('bad');game();const f=$('#fb');f.style.display='block';f.textContent='❌ این طرح به هدف نمی‌رسد و یک قلب کم شد. طرح را عوض کن و دوباره ثبت کن.'}
+
+/* ---------- لوگوی متحرک ---------- */
+function logo(){const t=$('#lt'),el=$('#el'),tr=$('#tr');if(!t||!t.getExtentOfChar)return;const b=t.getExtentOfChar(4),bb=t.getBBox(),px=b.x+b.width/2,py=17,x0=bb.x-8,x1=bb.x+bb.width+8,y1=50;
+const pts=[[px,py],[x1,py],[x1,y1],[x0,y1],[x0,py],[px,py]],ln=[0];for(let i=1;i<pts.length;i++)ln.push(ln[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));const PL=ln[ln.length-1];
+const pos=s=>{s=Math.min(PL,Math.max(0,s));let i=1;while(i<pts.length-1&&ln[i]<s)i++;const f=(s-ln[i-1])/(ln[i]-ln[i-1]||1);return[pts[i-1][0]+(pts[i][0]-pts[i-1][0])*f,pts[i-1][1]+(pts[i][1]-pts[i-1][1])*f]};
+const C=9000,A=1000,R=4200;let t0=performance.now();
+(function f(now){const c=(now-t0)%C;let x=px,y=py,rr=4.2,d='';
+if(c>=A&&c<A+R){const s=(c-A)/R*PL,a=pos(s);x=a[0];y=a[1];const p0=pos(s-26),p1=pos(s+8);d='M'+p0.join(' ');for(let k=1;k<=6;k++){const q=pos(s-26+k*(34/6));d+='L'+q.join(' ')}}
+else if(c>=A+R&&c<A+R+1300){const u=(c-A-R)/1000;y=py+8*Math.exp(-4.5*u)*Math.cos(17*u);rr=4.2+1.4*Math.exp(-4.5*u)*Math.cos(17*u+1)}
+else if(c<A){rr=4.2+.5*Math.sin(c/110)}
+el.setAttribute('cx',x);el.setAttribute('cy',y);el.setAttribute('r',Math.max(2,rr));tr.setAttribute('d',d);requestAnimationFrame(f)})(t0)}
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(logo);
+
+/* ===== eitaa.js: اتصال به کیت توسعهٔ ایتا (SDK). اگر SDK نباشد هیچ اثری ندارد ===== */
+(function(){const W=window.Eitaa&&window.Eitaa.WebApp;if(!W)return;
+const T=(f,...a)=>{try{return typeof W[f]=='function'?W[f](...a):void 0}catch(e){}};
+T('ready');T('expand');
+const hdr=()=>{const c=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();if(c){T('setHeaderColor',c);T('setBackgroundColor',c)}};
+const dark=()=>{try{if(W.colorScheme)return W.colorScheme=='dark';const b=(W.themeParams||{}).bg_color;if(b){const n=parseInt(b.replace('#',''),16);return((n>>16)*299+((n>>8&255)*587)+(n&255)*114)/1000<128}}catch(e){}return false};
+let manual=false;try{manual=!!localStorage.getItem('dkt')}catch(e){}
+const applyT=()=>{if(manual)return;ti=dark()?3:0;document.documentElement.dataset.theme=THM[ti];hdr()};
+applyT();try{W.onEvent('themeChanged',applyT)}catch(e){}
+const th=window.theme;if(typeof th=='function')window.theme=function(){manual=true;th();hdr()};
+const bb=W.BackButton,nav=s=>{try{s?bb.show():bb.hide()}catch(e){}};
+const nm=(()=>{try{const u=W.initDataUnsafe&&W.initDataUnsafe.user;return u&&u.first_name||''}catch(e){return ''}})();
+['home','levels','lesson','labx','formulas','settings','start','cont'].forEach(n=>{const f=window[n];if(typeof f!='function')return;
+window[n]=function(){const r=f.apply(this,arguments);nav(n!='home');
+if(n=='start'||n=='cont')T('enableClosingConfirmation');if(n=='home'||n=='levels')T('disableClosingConfirmation');
+if(n=='home'&&nm){const h=document.querySelector('#app h2');if(h)h.textContent='سلام '+nm+'! به دنکی‌کو خوش آمدی'}
+if(n=='settings')app.insertAdjacentHTML('beforeend','<button onclick="Eitaa.WebApp.close()">⏻ خروج از برنامک</button>');return r}});
+try{W.onEvent('backButtonClicked',()=>{const ov=document.getElementById('ov'),inGame=typeof Z!='undefined'&&Z&&!Z.done&&document.querySelector('.board');
+if(ov&&ov.classList.contains('on')){inGame?cls():cl();return}if(inGame){leave();return}home()})}catch(e){}
+})();
+
+home();try{if(!localStorage.getItem('dkoh'))ob(0)}catch(e){}
+</script></body></html>
